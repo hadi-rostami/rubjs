@@ -1,0 +1,14 @@
+import Client from "../..";
+
+async function setBlockUser(
+  this: Client,
+  user_guid: string,
+  action: "Block" | "Unblock" = "Block"
+) {
+  if (!["Block", "Unblock"].includes(action))
+    throw new Error("`action` argument can only be `Block` or `Unblock`.");
+
+  return await this.builder("setBlockUser", { user_guid, action });
+}
+
+export default setBlockUser;
