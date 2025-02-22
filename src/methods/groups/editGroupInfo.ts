@@ -9,6 +9,7 @@ async function editGroupInfo(
   description?: string,
   slow_mode?: string,
   event_messages?: boolean,
+  is_restricted_content?: boolean,
   chat_reaction_setting?: { [key: string]: string | number } | null | undefined,
   chat_history_for_new_members?: ChatHistoryOption
 ) {
@@ -33,6 +34,11 @@ async function editGroupInfo(
   if (event_messages !== undefined) {
     input_data.event_messages = event_messages;
     updated_parameters.push("event_messages");
+  }
+
+  if (is_restricted_content !== undefined) {
+    input_data.is_restricted_content = is_restricted_content;
+    updated_parameters.push("is_restricted_content");
   }
 
   if (chat_reaction_setting !== undefined) {

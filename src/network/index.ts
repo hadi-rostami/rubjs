@@ -5,6 +5,7 @@ import https from "https";
 import Client from "..";
 import * as fs from "fs";
 import * as path from "path";
+import { Message } from "../types";
 
 interface UploadResponse {
   data: {
@@ -190,8 +191,10 @@ class Network {
             filters.length === 0 ||
             filters.every((filter) => filter(messageData));
 
+          const dataMessage = new Message(this.client, messageData);
+
           if (isValid) {
-            await callback(messageData);
+            await callback(dataMessage)
           }
         }
       );
@@ -221,11 +224,7 @@ class Network {
 
     if (!mime) mime = fileName.split(".").pop() || "";
 
-    let result = await this.client.requestSendFile(
-      fileName,
-      file.length,
-      mime
-    );
+    let result = await this.client.requestSendFile(fileName, file.length, mime);
 
     let response: UploadResponse;
     let id: string = result.id;

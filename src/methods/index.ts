@@ -7,6 +7,8 @@ import {
   MessagesTypes,
   AuthTypes,
   GroupTypes,
+  Message,
+  ChatTypes,
 } from "../types";
 
 // Methods
@@ -23,8 +25,6 @@ import * as Settings from "./settings";
 import * as Stickers from "./stickers";
 import * as Users from "./users";
 import * as Utilities from "./utilities";
-
-console.log(Settings, Stickers);
 
 type TypeUpdate =
   | "show_activities"
@@ -47,12 +47,10 @@ class Methods {
     }
   }
 
+  onMessageUpdates(callback: (message: Message) => void): void;
   onMessageUpdates(
-    callback: (message: DecoratorsTypes.MessageUpdate) => void
-  ): void;
-  onMessageUpdates(
-    filters: ((msg: DecoratorsTypes.MessageUpdate) => boolean)[],
-    callback: (message: DecoratorsTypes.MessageUpdate) => void
+    filters: ((msg: Message) => boolean)[],
+    callback: (message: Message) => void
   ): void;
   onMessageUpdates(this: Client, arg1: any, arg2?: any): void {
     this.registerHandler("message_updates", arg1, arg2);
@@ -121,6 +119,13 @@ class Methods {
     return Auth.signIn.apply(this, args);
   }
 
+  async logout(
+    this: Client,
+    ...args: Parameters<typeof Auth.logout>
+  ): Promise<any> {
+    return Auth.logout.apply(this, args);
+  }
+
   // channels
   async addChannel(
     this: Client,
@@ -148,6 +153,31 @@ class Methods {
     ...args: Parameters<typeof Channels.channelPreviewByJoinLink>
   ): Promise<any> {
     return Channels.channelPreviewByJoinLink.apply(this, args);
+  }
+
+  async leaveChannelVoiceChat(
+    this: Client,
+    ...args: Parameters<typeof Channels.leaveChannelVoiceChat>
+  ): Promise<any> {
+    return Channels.leaveChannelVoiceChat.apply(this, args);
+  }
+  async cancelChangeObjectOwner(
+    this: Client,
+    ...args: Parameters<typeof Channels.cancelChangeObjectOwner>
+  ): Promise<any> {
+    return Channels.cancelChangeObjectOwner.apply(this, args);
+  }
+  async requestChangeObjectOwner(
+    this: Client,
+    ...args: Parameters<typeof Channels.requestChangeObjectOwner>
+  ): Promise<any> {
+    return Channels.requestChangeObjectOwner.apply(this, args);
+  }
+  async getPendingObjectOwner(
+    this: Client,
+    ...args: Parameters<typeof Channels.getPendingObjectOwner>
+  ): Promise<any> {
+    return Channels.getPendingObjectOwner.apply(this, args);
   }
 
   async checkChannelUsername(
@@ -299,6 +329,92 @@ class Methods {
     return Chats.getAvatars.apply(this, args);
   }
 
+  async clickMessageUrl(
+    this: Client,
+    ...args: Parameters<typeof Chats.clickMessageUrl>
+  ): Promise<any> {
+    return Chats.clickMessageUrl.apply(this, args);
+  }
+
+  async searchGlobalMessages(
+    this: Client,
+    ...args: Parameters<typeof Chats.searchGlobalMessages>
+  ): Promise<any> {
+    return Chats.searchGlobalMessages.apply(this, args);
+  }
+
+  async getChatReaction(
+    this: Client,
+    ...args: Parameters<typeof Chats.getChatReaction>
+  ): Promise<any> {
+    return Chats.getChatReaction.apply(this, args);
+  }
+
+  async sendLive(
+    this: Client,
+    ...args: Parameters<typeof Chats.sendLive>
+  ): Promise<ChatTypes.SendLive> {
+    return Chats.sendLive.apply(this, args);
+  }
+  async getLivePlayUrl(
+    this: Client,
+    ...args: Parameters<typeof Chats.getLivePlayUrl>
+  ): Promise<any> {
+    return Chats.getLivePlayUrl.apply(this, args);
+  }
+  async getLiveComments(
+    this: Client,
+    ...args: Parameters<typeof Chats.getLiveComments>
+  ): Promise<any> {
+    return Chats.getLiveComments.apply(this, args);
+  }
+  async getLiveStatus(
+    this: Client,
+    ...args: Parameters<typeof Chats.getLiveStatus>
+  ): Promise<any> {
+    return Chats.getLiveStatus.apply(this, args);
+  }
+  async addLiveComment(
+    this: Client,
+    ...args: Parameters<typeof Chats.addLiveComment>
+  ): Promise<any> {
+    return Chats.addLiveComment.apply(this, args);
+  }
+  async createJoinLink(
+    this: Client,
+    ...args: Parameters<typeof Chats.createJoinLink>
+  ): Promise<any> {
+    return Chats.createJoinLink.apply(this, args);
+  }
+
+  async editJoinLink(
+    this: Client,
+    ...args: Parameters<typeof Chats.editJoinLink>
+  ): Promise<any> {
+    return Chats.editJoinLink.apply(this, args);
+  }
+
+  async removeJoinLink(
+    this: Client,
+    ...args: Parameters<typeof Chats.removeJoinLink>
+  ): Promise<any> {
+    return Chats.removeJoinLink.apply(this, args);
+  }
+
+  async getJoinRequests(
+    this: Client,
+    ...args: Parameters<typeof Chats.getJoinRequests>
+  ): Promise<any> {
+    return Chats.getJoinRequests.apply(this, args);
+  }
+
+  async actionOnJoinRequest(
+    this: Client,
+    ...args: Parameters<typeof Chats.actionOnJoinRequest>
+  ): Promise<any> {
+    return Chats.actionOnJoinRequest.apply(this, args);
+  }
+
   async getChats(
     this: Client,
     ...args: Parameters<typeof Chats.getChats>
@@ -311,6 +427,27 @@ class Methods {
     ...args: Parameters<typeof Chats.getChatsUpdates>
   ): Promise<any> {
     return Chats.getChatsUpdates.apply(this, args);
+  }
+
+  async getTopChatUsers(
+    this: Client,
+    ...args: Parameters<typeof Chats.getTopChatUsers>
+  ): Promise<ChatTypes.getTopChatUsers> {
+    return Chats.getTopChatUsers.apply(this, args);
+  }
+
+  async getObjectInfoByUsername(
+    this: Client,
+    ...args: Parameters<typeof Chats.getObjectInfoByUsername>
+  ): Promise<ChatTypes.GetObjectInfoByUsername> {
+    return Chats.getObjectInfoByUsername.apply(this, args);
+  }
+
+  async removeFromTopChatUsers(
+    this: Client,
+    ...args: Parameters<typeof Chats.removeFromTopChatUsers>
+  ): Promise<{}> {
+    return Chats.removeFromTopChatUsers.apply(this, args);
   }
 
   async getLinkFromAppUrl(
@@ -376,6 +513,20 @@ class Methods {
     ...args: Parameters<typeof Contacts.getContacts>
   ): Promise<any> {
     return Contacts.getContacts.apply(this, args);
+  }
+
+  async getContactsLastOnline(
+    this: Client,
+    ...args: Parameters<typeof Contacts.getContactsLastOnline>
+  ): Promise<any> {
+    return Contacts.getContactsLastOnline.apply(this, args);
+  }
+
+  async resetContacts(
+    this: Client,
+    ...args: Parameters<typeof Contacts.resetContacts>
+  ): Promise<any> {
+    return Contacts.resetContacts.apply(this, args);
   }
 
   async getContactsUpdates(
@@ -517,6 +668,13 @@ class Methods {
     return Groups.banGroupMember.apply(this, args);
   }
 
+  async discardGroupVoiceChat(
+    this: Client,
+    ...args: Parameters<typeof Groups.discardGroupVoiceChat>
+  ): Promise<any> {
+    return Groups.discardGroupVoiceChat.apply(this, args);
+  }
+
   async createGroupVoiceChat(
     this: Client,
     ...args: Parameters<typeof Groups.createGroupVoiceChat>
@@ -557,6 +715,13 @@ class Methods {
     ...args: Parameters<typeof Groups.getGroupAdminMembers>
   ): Promise<any> {
     return Groups.getGroupAdminMembers.apply(this, args);
+  }
+
+  async getGroupOnlineCount(
+    this: Client,
+    ...args: Parameters<typeof Groups.getGroupOnlineCount>
+  ): Promise<any> {
+    return Groups.getGroupOnlineCount.apply(this, args);
   }
 
   async getGroupAllMembers(
@@ -648,6 +813,13 @@ class Methods {
     ...args: Parameters<typeof Groups.setGroupDefaultAccess>
   ): Promise<any> {
     return Groups.setGroupDefaultAccess.apply(this, args);
+  }
+
+  async seenGroupMessages(
+    this: Client,
+    ...args: Parameters<typeof Groups.seenGroupMessages>
+  ): Promise<any> {
+    return Groups.seenGroupMessages.apply(this, args);
   }
 
   async setGroupLink(
@@ -834,6 +1006,13 @@ class Methods {
     return Messages.sendText.apply(this, args);
   }
 
+  async getMessages(
+    this: Client,
+    ...args: Parameters<typeof Messages.getMessages>
+  ): Promise<any> {
+    return Messages.getMessages.apply(this, args);
+  }
+
   // settings
 
   async deleteFolder(
@@ -918,6 +1097,42 @@ class Methods {
     ...args: Parameters<typeof Settings.updateUsername>
   ): Promise<any> {
     return Settings.updateUsername.apply(this, args);
+  }
+  async changePassword(
+    this: Client,
+    ...args: Parameters<typeof Settings.changePassword>
+  ): Promise<any> {
+    return Settings.changePassword.apply(this, args);
+  }
+  async turnOffTwoStep(
+    this: Client,
+    ...args: Parameters<typeof Settings.turnOffTwoStep>
+  ): Promise<any> {
+    return Settings.turnOffTwoStep.apply(this, args);
+  }
+  async verifyRecoveryEmail(
+    this: Client,
+    ...args: Parameters<typeof Settings.verifyRecoveryEmail>
+  ): Promise<any> {
+    return Settings.verifyRecoveryEmail.apply(this, args);
+  }
+  async requestRecoveryEmail(
+    this: Client,
+    ...args: Parameters<typeof Settings.requestRecoveryEmail>
+  ): Promise<any> {
+    return Settings.requestRecoveryEmail.apply(this, args);
+  }
+  async checkTwoStepPasscode(
+    this: Client,
+    ...args: Parameters<typeof Settings.checkTwoStepPasscode>
+  ): Promise<any> {
+    return Settings.checkTwoStepPasscode.apply(this, args);
+  }
+  async terminateOtherSessions(
+    this: Client,
+    ...args: Parameters<typeof Settings.terminateOtherSessions>
+  ): Promise<any> {
+    return Settings.terminateOtherSessions.apply(this, args);
   }
 
   //  stickers

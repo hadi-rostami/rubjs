@@ -165,6 +165,6 @@ interface ShowNotifications {
   };
 }
 
-export { MessageUpdate, ChatUpdates, ShowActivities, ShowNotifications };
+export { MessageUpdate, ChatUpdates, ShowActivities, ShowNotifications , Message };
 
 export default MessageUpdate;
