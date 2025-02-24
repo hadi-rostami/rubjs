@@ -1,8 +1,9 @@
 import Client from "./client";
 import Crypto from "./crypto";
+import Markdown from "./parser";
 import * as Types from "./types";
-import { Filters } from "./utils";
+import { Filters, Utils } from "./utils";
 
 export default Client;
 
-export { Client, Crypto, Filters, Types };
+export { Client, Crypto, Markdown, Utils, Filters, Types };

@@ -1,9 +1,12 @@
+import { MessageUpdate, FileInline } from "../types/decorators";
 
+class Filters {
+  static findKey(message: any, key: string): any {
+    if (!message || typeof message !== "object") {
+      return undefined;
+    }
 
-const Filters = {
-  findKey: (message, key) => {
     const messageKeys = Object.keys(message);
-
     if (messageKeys.includes(key)) {
       return message[key];
     }
@@ -27,19 +30,26 @@ const Filters = {
     }
 
     return undefined;
-  },
+  }
 
-  guidType: (message, startWith): boolean => {
-    let result: string | undefined = Filters.findKey(message, "object_guid");
+  static guidType(message: MessageUpdate, startWith: string): boolean {
+    const result = Filters.findKey(message, "object_guid");
+    return result?.startsWith(startWith) ?? false;
+  }
 
-    const resultData = result && result.startsWith(startWith);
+  static isMention(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message.message?.metadata?.meta_data_parts, "link");
+  }
 
-    return resultData;
-  },
+  static isReply(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message, "reply_to_message_id");
+  }
 
-  is_reply: (message) => !!Filters.findKey(message, "reply_to_message_id"),
-  is_edited: (message) => !!Filters.findKey(message, "is_edited"),
-  is_link: (message) => {
+  static isEdited(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message, "is_edited");
+  }
+
+  static isLink(message: MessageUpdate): boolean {
     const link = Filters.findKey(message, "text");
     if (!link) return false;
 
@@ -51,26 +61,83 @@ const Filters = {
       RUBIKA_LINK_PATTERN.test(link) ||
       USERNAME_PATTERN.test(link)
     );
-  },
+  }
 
-  is_text: (message) => !!Filters.findKey(message, "text"),
-  is_group: (message) => Filters.guidType(message, "g0"),
-  is_channel: (message) => Filters.guidType(message, "c0"),
-  is_private: (message) => Filters.guidType(message, "u0"),
-  is_froward: (message) => !!Filters.findKey(message, "forwarded_from"),
-  is_file_inline: (message) => !!Filters.findKey(message, "file_inline"),
-  // is_file: (message) => !!Filters.findKey(message, "File"),
-  // is_photo: (message) => !!Filters.findKey(message, "Image"),
-  // is_sticker: (message) => !!Filters.findKey(message, "Sticker"),
-  // is_video: (message) => !!Filters.findKey(message, "Video"),
-  // is_voice: (message) => !!Filters.findKey(message, "Voice"),
-  // is_gif: (message) => !!Filters.findKey(message, "Gif"),
-  // is_audio: (message) => !!Filters.findKey(message, "Music"),
-  // is_location: (message) => !!Filters.findKey(message, "Location"),
-  // is_contact: (message) => !!Filters.findKey(message, "ContactMessage"),
-  is_poll: (message) => !!Filters.findKey(message, "poll"),
-  is_live: (message) => !!Filters.findKey(message, "live_data"),
-  is_event: (message) => !!Filters.findKey(message, "event_data"),
-};
+  static isText(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message, "text");
+  }
+
+  static isGroup(message: MessageUpdate): boolean {
+    return Filters.guidType(message, "g0");
+  }
+
+  static isChannel(message: MessageUpdate): boolean {
+    return Filters.guidType(message, "c0");
+  }
+
+  static isPrivate(message: MessageUpdate): boolean {
+    return Filters.guidType(message, "u0");
+  }
+
+  static isForward(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message, "forwarded_from");
+  }
+
+  static fileInline(message: MessageUpdate): FileInline | undefined {
+    return message.message?.file_inline;
+  }
+
+  static isFileInline(message: MessageUpdate): boolean {
+    return ["FileInline", "FileInlineCaption"].includes(message.message?.type);
+  }
+
+  static isFile(message: MessageUpdate): boolean {
+    return Filters.fileInline(message)?.type === "File";
+  }
+
+  static isPhoto(message: MessageUpdate): boolean {
+    return Filters.fileInline(message)?.type === "Image";
+  }
+
+  static isSticker(message: MessageUpdate): boolean {
+    return Filters.fileInline(message)?.type === "Sticker";
+  }
+
+  static isVideo(message: MessageUpdate): boolean {
+    return Filters.fileInline(message)?.type === "Video";
+  }
+
+  static isVoice(message: MessageUpdate): boolean {
+    return Filters.fileInline(message)?.type === "Voice";
+  }
+
+  static isGif(message: MessageUpdate): boolean {
+    return Filters.fileInline(message)?.type === "Gif";
+  }
+
+  static isMusic(message: MessageUpdate): boolean {
+    return Filters.fileInline(message)?.type === "Music";
+  }
+
+  static isLocation(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message.message, "location");
+  }
+
+  static isContact(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message.message, "contact_message");
+  }
+
+  static isPoll(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message, "poll");
+  }
+
+  static isLive(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message, "live_data");
+  }
+
+  static isEvent(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message, "event_data");
+  }
+}
 
 export default Filters;

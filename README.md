@@ -1,40 +1,55 @@
 <p align="center">
     <br>
-    <b>Rubika API Framework for JavaScript</b>
+    <b>فریمورک API روبیکا برای جاوااسکریپت</b>
 </p>
 
 ## RubJS
 
-> Elegant, modern and asynchronous Rubika API framework in JavaScript for users account
+> یک فریمورک مدرن، زیبا و غیرهمزمان (Asynchronous) برای API روبیکا در جاوااسکریپت
 
-### Async Accounts
+### حساب‌ غیرهمزمان
+
 ```javascript
-const { Client, Filters } = require("../rubjs");
+const { Client, Utils, Filters } = require("../rubjs");
 
 const bot = new Client("bot");
 
-bot.onMessageUpdates([Filters.is_text], async (message) => {
-  await message.reply("Hello From RubJS!!");
+const object_guid = "object_guid";
+
+const customFilter = (msg) => msg.object_guid === object_guid;
+
+bot.onMessageUpdates([customFilter, Filters.isText], async (message) => {
+  await message.reply(`Hello ${Utils.Italic("from")} ${Utils.Bold("RubJS")}! `);
 });
 
 bot.run();
-
 ```
+<p dir="rtl">
+  <b>RubJS</b> یک فریمورک مدرن، زیبا و غیرهمزمان است که به شما امکان می‌دهد به‌راحتی با API اصلی روبیکا از طریق یک حساب کاربری (کلاینت سفارشی) با استفاده از جاوا اسکریپت تعامل داشته باشید.
+</p>
 
-**RubJS** is a modern, elegant and asynchronous framework. It enables you to easily interact with the main Rubika API through a user account (custom client) or a bot
-identity (bot API alternative) using JavaScript.
+### ویژگی‌ها
 
+<ul dir="rtl">
+  <li>
+    <b>آماده</b>: RubJS را با npm نصب کنید و بلافاصله شروع به ساخت برنامه‌های خود کنید.
+  </li>
+  <li>
+    <b>ساده</b>:  API روبیکا را به شکلی ساده و قابل‌فهم ارائه می‌دهد، درحالی‌که قابلیت‌های پیشرفته را نیز حفظ می‌کند.
+  </li>
+  <li>
+    <b>زیبا</b>: جزئیات سطح پایین را انتزاعی کرده و آن‌ها را به روشی مناسب‌تر نمایش می‌دهد.
+  </li>
+  <li>
+    <b>غیرهمزمان</b>: کاملاً غیرهمزمان است
+  </li>
+  <li>
+    <b>قدرتمند</b>: دسترسی کامل به API روبیکا برای اجرای هر عملیات رسمی کلاینت و موارد دیگر.
+  </li>
+</ul>
 
-### Key Features
+### نصب
 
-- **Ready**: Install RubJS with npm and start building your applications right away.
-- **Easy**: Makes the Rubika API simple and intuitive, while still allowing advanced usages.
-- **Elegant**: Low-level details are abstracted and re-presented in a more convenient way.
-- **Async**: Fully asynchronous (also usable synchronously if wanted, for convenience).
-- **Powerful**: Full access to Rubika's API to execute any official client action and more.
-
-### Installing
-
-``` bash
+```bash
 npm install rubjs
 ```

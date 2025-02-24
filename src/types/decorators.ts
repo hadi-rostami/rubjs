@@ -1,3 +1,5 @@
+import { Metadata } from "sharp";
+
 interface FileInline {
   file_id: number;
   mime: string;
@@ -81,6 +83,15 @@ interface PollData {
   allows_multiple_answers: boolean;
 }
 
+interface MetaData {
+  meta_data_parts: {
+    from_index: number;
+    length: number;
+    type: string;
+    link?: { url: string };
+  }[];
+}
+
 interface Message {
   message_id: string;
   text?: string;
@@ -102,6 +113,7 @@ interface Message {
     message_id: string;
     object_guid: string;
   };
+  metadata?: MetaData;
   count_seen?: string;
   thumb_inline?: string;
 }
@@ -165,6 +177,13 @@ interface ShowNotifications {
   };
 }
 
-export { MessageUpdate, ChatUpdates, ShowActivities, ShowNotifications , Message };
+export {
+  MessageUpdate,
+  ChatUpdates,
+  ShowActivities,
+  ShowNotifications,
+  Message,
+  FileInline
+};
 
 export default MessageUpdate;

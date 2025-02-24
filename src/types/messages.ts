@@ -8,6 +8,15 @@ interface Reaction {
   is_selected: boolean;
 }
 
+interface MetaData {
+  meta_data_parts: {
+    from_index: number;
+    length: number;
+    type: string;
+    link?: { url: string };
+  }[];
+}
+
 interface Message {
   message_id: string;
   text: string;
@@ -18,6 +27,7 @@ interface Message {
   author_object_guid: string;
   allow_transcription?: boolean;
   reactions?: Reaction[];
+  metadata?: MetaData;
 }
 
 interface Chat {

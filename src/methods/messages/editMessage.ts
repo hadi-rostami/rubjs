@@ -1,4 +1,5 @@
 import Client from "../..";
+import Markdown from "../../parser";
 
 async function editMessage(
   this: Client,
@@ -9,7 +10,7 @@ async function editMessage(
   const input = {
     object_guid,
     message_id,
-    text: text.trim(),
+    ...Markdown.toMetadata(text),
   };
 
   return await this.builder("editMessage", input);

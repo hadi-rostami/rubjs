@@ -2,6 +2,7 @@ import * as fs from "fs";
 import Client from "../..";
 import { IAudioMetadata, parseBuffer } from "music-metadata";
 import { thumbnail } from "../utilities";
+import Markdown from "../../parser";
 
 async function sendMessage(
   this: Client,
@@ -25,7 +26,7 @@ async function sendMessage(
     rnd: Math.floor(Math.random() * 1e6 + 1),
   };
 
-  if (text) input["text"] = text;
+  if (text) input = { ...input, ...Markdown.toMetadata(text) };
   let file_uploaded;
   let fileName: string | null = null;
   let audio_data: IAudioMetadata;
@@ -33,7 +34,6 @@ async function sendMessage(
   if (file_inline) {
     if (typeof file_inline === "string") {
       fileName = file_inline;
-      console.log(fileName);
 
       if (!fs.existsSync(fileName)) {
         throw new Error("File not found in the given path");
@@ -90,7 +90,7 @@ async function sendMessage(
 
   if (file_inline) {
     input["file_inline"] = file_uploaded;
-  }
+  }  
 
   const result = await this.builder("sendMessage", input);
 

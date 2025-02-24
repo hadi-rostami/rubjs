@@ -15,9 +15,9 @@ class SQLiteSession {
   constructor(sessionName: string) {
     this.dbFile = sessionName.endsWith(".rp") ? sessionName : `${sessionName}.rp`;
     this.db = new Database(this.dbFile);
-    this.db.pragma("journal_mode = WAL"); 
     this.initializeDB();
   }
+
 
   private handleError<T>(operation: string, callback: () => T): T {
     try {
@@ -30,6 +30,8 @@ class SQLiteSession {
 
   private initializeDB(): void {
     this.handleError("initializeDB", () => {
+      this.db.pragma("journal_mode = DELETE");
+
       const sessionTable = this.db
         .prepare("SELECT name FROM sqlite_master WHERE type=? AND name=?")
         .get("table", "session");
