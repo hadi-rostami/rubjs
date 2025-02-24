@@ -10,7 +10,7 @@
 ### حساب‌ غیرهمزمان
 
 ```javascript
-const { Client, Utils, Filters } = require("../rubjs");
+const { Client, Utils, Filters } = require("rubjs");
 
 const bot = new Client("bot");
 
