@@ -103,8 +103,6 @@ async function sendMessage(
     input["file_inline"] = file_uploaded;
   }
 
-  console.log(input);
-  
 
   const result = await this.builder("sendMessage", input);
 
