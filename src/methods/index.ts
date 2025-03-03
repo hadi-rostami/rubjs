@@ -622,6 +622,15 @@ class Methods {
     return Extras.userIsAdmin.apply(this, args);
   }
 
+  async deleteMessagebyCount(
+    this: Client,
+    ...args: Parameters<typeof Extras.deleteMessagebyCount>
+  ): Promise<any> {
+    return Extras.deleteMessagebyCount.apply(this, args);
+  }
+
+
+
   // gif
 
   async addToMyGifSet(

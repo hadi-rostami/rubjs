@@ -1,6 +1,16 @@
 import Client from "..";
 import { MessageUpdate, Message as MessageType } from "./decorators";
 
+const getOriginalType = (message) => {
+  if (message.message.type.includes("FileInline")) {
+    return message.message.file_inline.type;
+  }
+  if (message.message.type === "Event") {
+    return message.message.event_data.type;
+  }
+  return message.message.type;
+};
+
 class Message implements MessageUpdate {
   message_id: string;
   action: string;
@@ -13,12 +23,20 @@ class Message implements MessageUpdate {
   state: string;
 
   declare client: Client;
+  declare originalType: string;
 
   constructor(client: Client, update: MessageUpdate) {
     Object.assign(this, update);
 
     Object.defineProperty(this, "client", {
       value: client,
+      enumerable: false,
+      writable: true,
+      configurable: true,
+    });
+
+    Object.defineProperty(this, "originalType", {
+      value: getOriginalType(update),
       enumerable: false,
       writable: true,
       configurable: true,
@@ -89,7 +107,9 @@ class Message implements MessageUpdate {
   }
 
   async delete() {
-    return await this.client.deleteMessages(this.object_guid, [this.message_id]);
+    return await this.client.deleteMessages(this.object_guid, [
+      this.message_id,
+    ]);
   }
 
   async reaction(

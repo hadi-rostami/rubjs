@@ -10,7 +10,7 @@ type MarkdownEntity = {
 
 class Markdown {
   static markdownRegExp =
-    /(^|\s|\n)(````?)([\s\S]+?)(````?)([\s\n\.,:?!;]|$)|(^|\s)(`|\*\*|__|~~|--|\|\|)([^\n]+?)\7([\s\.,:?!;]|$)|@([a-zA-Z0-9]+)\s*\((.+?)\)|\[(.+?)\]\((.+?)\)/m;
+    /(^|\s|\n)(````?)([\s\S]+?)(````?)([\s\n\.,:?!;]|$)|(^|\s)(`|\*\*|__|~~|--|\|\||\^\^)([^\n]+?)\7([\s\.,:?!;]|$)|@([a-zA-Z0-9]+)\s*\((.+?)\)|\[(.+?)\]\((.+?)\)/m;
 
   static markdownEntities: Record<string, string> = {
     "`": "Mono",
@@ -19,6 +19,7 @@ class Markdown {
     "||": "Spoiler",
     "~~": "Strike",
     "--": "Underline",
+    "^^": "Quote",
   };
 
   static toMetadata(text: string): {

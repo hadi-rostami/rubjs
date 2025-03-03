@@ -44,7 +44,7 @@ class Client extends Methods {
   initialize: boolean;
   eventHandlers: {
     callback: Function;
-    filters: ((msg) => boolean)[];
+    filters: ((msg) => boolean)[] |((msg) => boolean)[][]  ;
     updateType: TypeUpdate;
   }[];
 

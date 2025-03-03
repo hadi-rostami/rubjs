@@ -1,4 +1,5 @@
 import banMember from "./banMember";
+import deleteMessagebyCount from "./deleteMessagebyCount";
 import getInfo from "./getInfo";
 import getObjectByUsername from "./getObjectByUsername";
 import getProfileLinkItems from "./getProfileLinkItems";
@@ -24,4 +25,5 @@ export {
   searchGlobalObjects,
   transcribeVoice,
   userIsAdmin,
+  deleteMessagebyCount
 };

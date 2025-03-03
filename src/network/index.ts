@@ -187,7 +187,15 @@ class Network {
 
           const isValid =
             filters.length === 0 ||
-            filters.every((filter) => filter(messageData));
+            filters.every((filter) => {
+              if (typeof filter === "function") return filter(messageData);
+
+              for (let filterCriteria of filter) {
+                let isMatch = filterCriteria(messageData);
+                if (isMatch === true) return true;
+              }
+              return false;
+            });
 
           const dataMessage = new Message(this.client, messageData);
 

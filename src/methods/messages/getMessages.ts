@@ -3,10 +3,18 @@ import Client from "../..";
 async function getMessages(
   this: Client,
   object_guid: string,
-  filter_type: string,
+
   max_id: string,
   limit: string,
-  sort: "FromMin" | "FromMax" = "FromMax"
+  sort: "FromMin" | "FromMax" = "FromMax",
+  filter_type?:
+    | "Music"
+    | "File"
+    | "Media"
+    | "Voice"
+    | "Gif"
+    | "Groups"
+    | "Channels"
 ) {
   return await this.builder("getMessages", {
     object_guid,

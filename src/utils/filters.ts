@@ -38,7 +38,14 @@ class Filters {
   }
 
   static isMention(message: MessageUpdate): boolean {
-    return !!Filters.findKey(message.message?.metadata?.meta_data_parts, "link");
+    return !!Filters.findKey(
+      message.message?.metadata?.meta_data_parts,
+      "link"
+    );
+  }
+
+  static isMarkdown(message: MessageUpdate): boolean {
+    return !!Filters.findKey(message.message, "metadata");
   }
 
   static isReply(message: MessageUpdate): boolean {
