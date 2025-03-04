@@ -19,27 +19,29 @@ async function deleteMessagebyCount(
   const countLoop = Math.ceil(count / 25);
   const tasks: Promise<DeleteMessage>[] = [];
 
-  for (let index = 0; index < countLoop; index++) {
-    try {
-      const res = await this.getMessages(
+  for (let index = 1; index <= countLoop; index++) {
+    const res = await this.getMessages(
+      object_guid,
+      message_id,
+      "25",
+      sort,
+      filter_type
+    );
+
+    if (!res.has_continue) break;
+
+    message_id = res.new_max_id;
+    const messagesID = res.messages.map(
+      (message: Message) => message.message_id
+    );
+    tasks.push(
+      this.deleteMessages(
         object_guid,
-        message_id,
-        "25",
-        sort,
-        filter_type
-      );
-
-      if (!res.has_continue) break;
-
-      message_id = res.new_max_id;
-      const messagesID = res.messages.map(
-        (message: Message) => message.message_id
-      );
-
-      tasks.push(this.deleteMessages(object_guid, messagesID));
-    } catch (error) {
-      console.error(`Error fetching messages: ${error}`);
-    }
+        index !== countLoop
+          ? messagesID
+          : messagesID.slice(0, count - (countLoop - 1) * 25)
+      )
+    );
   }
 
   await Promise.allSettled(tasks);

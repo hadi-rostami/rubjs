@@ -4,6 +4,18 @@ interface ChatReactionSetting {
   reaction_type: string;
 }
 
+interface AvatarThumbnail {
+  file_id: string;
+  mime: string;
+  dc_id: string;
+  access_hash_rec: string;
+}
+
+interface OnlineTime {
+  type: string;
+  exact_time: number;
+}
+
 interface Group {
   group_guid: string;
   group_title: string;
@@ -82,18 +94,13 @@ interface GroupMember {
   member_guid: string;
   first_name: string;
   last_name: string;
-  avatar_thumbnail: {
-    file_id: string;
-    mime: string;
-    dc_id: string;
-    access_hash_rec: string;
-  };
+  avatar_thumbnail: AvatarThumbnail;
   is_verified: boolean;
   is_deleted: boolean;
   last_online: number;
   join_type: string;
   username: string;
-  online_time: { type: string; exact_time: number };
+  online_time: OnlineTime;
 }
 
 interface AddGroup {
@@ -132,9 +139,35 @@ interface BanGroupMember {
 
 interface GetBannedGroupMembers {
   in_chat_members: GroupMember[];
-  next_start_id: "67b0e8bc1b50d7bec6fc950b";
-  has_continue: false;
-  timestamp: "1739888215";
+  next_start_id: string;
+  has_continue: boolean;
+  timestamp: string;
+}
+
+interface GetGroupInfo {
+  group: Group;
+  chat: Chat;
+  timestamp: string;
+}
+
+interface GetGroupAdminMembers {
+  in_chat_members: {
+    member_type: string;
+    member_guid: string;
+    first_name: string;
+    avatar_thumbnail: AvatarThumbnail;
+    is_verified: boolean;
+    is_deleted: boolean;
+    last_online: number;
+    promoted_by_object_guid: string;
+    promoted_by_object_type: string;
+    join_type: string;
+    username: string;
+    online_time: OnlineTime;
+  }[];
+  next_start_id: string;
+  has_continue: boolean;
+  timestamp: string;
 }
 
 export {
@@ -143,5 +176,7 @@ export {
   CreateGroupVoiceChat,
   AddGroupMembers,
   BanGroupMember,
-  GetBannedGroupMembers
+  GetBannedGroupMembers,
+  GetGroupInfo,
+  GetGroupAdminMembers,
 };

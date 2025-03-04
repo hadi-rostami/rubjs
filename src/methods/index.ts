@@ -629,8 +629,6 @@ class Methods {
     return Extras.deleteMessagebyCount.apply(this, args);
   }
 
-
-
   // gif
 
   async addToMyGifSet(
@@ -722,7 +720,7 @@ class Methods {
   async getGroupAdminMembers(
     this: Client,
     ...args: Parameters<typeof Groups.getGroupAdminMembers>
-  ): Promise<any> {
+  ): Promise<GroupTypes.GetGroupAdminMembers> {
     return Groups.getGroupAdminMembers.apply(this, args);
   }
 
@@ -750,7 +748,7 @@ class Methods {
   async getGroupInfo(
     this: Client,
     ...args: Parameters<typeof Groups.getGroupInfo>
-  ): Promise<any> {
+  ): Promise<GroupTypes.GetGroupInfo> {
     return Groups.getGroupInfo.apply(this, args);
   }
 
@@ -931,19 +929,19 @@ class Methods {
     return Messages.requestSendFile.apply(this, args);
   }
 
-    async sendDocument(
-      this: Client,
-      ...args: Parameters<typeof Messages.sendDocument>
-    ): Promise<any> {
-      return Messages.sendDocument.apply(this, args);
-    }
+  async sendDocument(
+    this: Client,
+    ...args: Parameters<typeof Messages.sendDocument>
+  ): Promise<any> {
+    return Messages.sendDocument.apply(this, args);
+  }
 
-    async sendGif(
-      this: Client,
-      ...args: Parameters<typeof Messages.sendGif>
-    ): Promise<any> {
-      return Messages.sendGif.apply(this, args);
-    }
+  async sendGif(
+    this: Client,
+    ...args: Parameters<typeof Messages.sendGif>
+  ): Promise<any> {
+    return Messages.sendGif.apply(this, args);
+  }
 
   async sendMessage(
     this: Client,
@@ -952,12 +950,12 @@ class Methods {
     return Messages.sendMessage.apply(this, args);
   }
 
-    async sendMusic(
-      this: Client,
-      ...args: Parameters<typeof Messages.sendMusic>
-    ): Promise<any> {
-      return Messages.sendMusic.apply(this, args);
-    }
+  async sendMusic(
+    this: Client,
+    ...args: Parameters<typeof Messages.sendMusic>
+  ): Promise<any> {
+    return Messages.sendMusic.apply(this, args);
+  }
 
   async sendPhoto(
     this: Client,
@@ -973,26 +971,26 @@ class Methods {
   //     return Messages.sendSticker.apply(this, args);
   //   }
 
-    async sendVideo(
-      this: Client,
-      ...args: Parameters<typeof Messages.sendVideo>
-    ): Promise<any> {
-      return Messages.sendVideo.apply(this, args);
-    }
+  async sendVideo(
+    this: Client,
+    ...args: Parameters<typeof Messages.sendVideo>
+  ): Promise<any> {
+    return Messages.sendVideo.apply(this, args);
+  }
 
-    async sendVideoMessage(
-      this: Client,
-      ...args: Parameters<typeof Messages.sendVideoMessage>
-    ): Promise<any> {
-      return Messages.sendVideoMessage.apply(this, args);
-    }
+  async sendVideoMessage(
+    this: Client,
+    ...args: Parameters<typeof Messages.sendVideoMessage>
+  ): Promise<any> {
+    return Messages.sendVideoMessage.apply(this, args);
+  }
 
-    async sendVoice(
-      this: Client,
-      ...args: Parameters<typeof Messages.sendVoice>
-    ): Promise<any> {
-      return Messages.sendVoice.apply(this, args);
-    }
+  async sendVoice(
+    this: Client,
+    ...args: Parameters<typeof Messages.sendVoice>
+  ): Promise<any> {
+    return Messages.sendVoice.apply(this, args);
+  }
 
   async setPinMessage(
     this: Client,
