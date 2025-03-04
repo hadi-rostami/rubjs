@@ -182,25 +182,28 @@ class Network {
 
       this.client.eventHandlers.forEach(
         async ({ callback, filters = [], updateType }) => {
-          const messageData = update[updateType]?.[0];
-          if (!messageData) return;
+          if (update[updateType].length > 0) {
+            for (let messageData of update[updateType]) {
+              if (!messageData) return;
 
-          const isValid =
-            filters.length === 0 ||
-            filters.every((filter) => {
-              if (typeof filter === "function") return filter(messageData);
+              const isValid =
+                filters.length === 0 ||
+                filters.every((filter) => {
+                  if (typeof filter === "function") return filter(messageData);
 
-              for (let filterCriteria of filter) {
-                let isMatch = filterCriteria(messageData);
-                if (isMatch === true) return true;
+                  for (let filterCriteria of filter) {
+                    let isMatch = filterCriteria(messageData);
+                    if (isMatch === true) return true;
+                  }
+                  return false;
+                });
+
+              const dataMessage = new Message(this.client, messageData);
+
+              if (isValid) {
+                await callback(dataMessage);
               }
-              return false;
-            });
-
-          const dataMessage = new Message(this.client, messageData);
-
-          if (isValid) {
-            await callback(dataMessage);
+            }
           }
         }
       );
