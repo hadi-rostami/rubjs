@@ -87,6 +87,13 @@ class Methods {
     this.registerHandler("show_notifications", arg1, arg2);
   }
 
+  onEditMessages(
+    this: Client,
+    ...args: Parameters<typeof Extras.onEditMessages>
+  ): Promise<any> {
+    return Extras.onEditMessages.apply(this, args);
+  }
+
   // advanced
 
   async builder(

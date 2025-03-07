@@ -54,6 +54,7 @@ interface ChatWithPin extends Chat {
 interface MessageUpdateBase {
   message_id: string;
   action: string;
+  message: Message;
   updated_parameters: string[];
   timestamp: string;
   object_guid: string;

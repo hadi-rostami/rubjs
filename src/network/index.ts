@@ -182,7 +182,7 @@ class Network {
 
       this.client.eventHandlers.forEach(
         async ({ callback, filters = [], updateType }) => {
-          if (update[updateType].length > 0) {
+          if (update[updateType]?.length > 0) {
             for (let messageData of update[updateType]) {
               if (!messageData) return;
 

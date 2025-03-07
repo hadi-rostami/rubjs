@@ -1,5 +1,3 @@
-import { Metadata } from "sharp";
-
 interface FileInline {
   file_id: number;
   mime: string;

@@ -7,10 +7,12 @@ import getRelatedObjects from "./getRelatedObjects";
 import getTranscription from "./getTranscription";
 import join from "./join";
 import leaveChat from "./leaveChat";
+import onEditMessages from "./onEditMessages";
 import reportObject from "./reportObject";
 import searchGlobalObjects from "./searchGlobalObjects";
 import transcribeVoice from "./transcribeVoice";
 import userIsAdmin from "./userIsAdmin";
+
 
 export {
   banMember,
@@ -21,6 +23,7 @@ export {
   getTranscription,
   join,
   leaveChat,
+  onEditMessages,
   reportObject,
   searchGlobalObjects,
   transcribeVoice,

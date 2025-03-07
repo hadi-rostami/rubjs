@@ -1,5 +1,4 @@
-import Client from "..";
-import { MessageUpdate, Message as MessageType } from "./decorators";
+import { Types , Client } from "..";
 
 const getOriginalType = (message) => {
   if (message.message.type.includes("FileInline")) {
@@ -11,10 +10,10 @@ const getOriginalType = (message) => {
   return message.message.type;
 };
 
-class Message implements MessageUpdate {
+class Message implements Types.DecoratorsTypes.MessageUpdate {
   message_id: string;
   action: string;
-  message: MessageType;
+  message: Types.DecoratorsTypes.Message;
   updated_parameters: any[];
   timestamp: string;
   prev_message_id: string;
@@ -25,7 +24,7 @@ class Message implements MessageUpdate {
   declare client: Client;
   declare originalType: string;
 
-  constructor(client: Client, update: MessageUpdate) {
+  constructor(client: Client, update: Types.DecoratorsTypes.MessageUpdate) {
     Object.assign(this, update);
 
     Object.defineProperty(this, "client", {
