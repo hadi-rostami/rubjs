@@ -23,11 +23,11 @@ class Network {
   private inactivityTimeout: NodeJS.Timeout | null = null;
   private Headers: { [key: string]: string };
   private client: Client;
-  private session: Axios;
   private apiUrl: string | null = null;
   private wssUrl: string | null = null;
   private ws: WebSocket | null = null;
   private agent: https.Agent;
+  session: Axios;
 
   constructor(client: Client) {
     this.client = client;
