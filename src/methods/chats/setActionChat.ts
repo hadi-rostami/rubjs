@@ -5,8 +5,12 @@ async function setActionChat(
   object_guid: string,
   action: "Mute" | "Unmute"
 ) {
-  if (["Mute", "Unmute"].includes(action))
-    throw new Error('`action` argument can only be in `["Mute", "Unmute"]`');
+  if (["Mute", "Unmute"].includes(action)) {
+    console.warn(
+      '`action` argument can only be in `["Mute", "Unmute"]` Using default "Mute".'
+    );
+    action = "Mute";
+  }
 
   return await this.builder("setActionChat", { object_guid, action });
 }

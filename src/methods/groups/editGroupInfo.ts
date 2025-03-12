@@ -48,9 +48,10 @@ async function editGroupInfo(
 
   if (chat_history_for_new_members !== undefined) {
     if (!["Hidden", "Visible"].includes(chat_history_for_new_members)) {
-      throw new Error(
-        '`chat_history_for_new_members` argument can only be "Hidden" or "Visible".'
+      console.warn(
+        '`chat_history_for_new_members` argument can only be "Hidden" or "Visible". Using default "Hidden".'
       );
+      chat_history_for_new_members = "Hidden";
     }
     input_data.chat_history_for_new_members = chat_history_for_new_members;
     updated_parameters.push("chat_history_for_new_members");

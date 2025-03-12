@@ -10,8 +10,6 @@ async function start(this: Client): Promise<void> {
     this.userGuid = result.user.user_guid;
     this.initialize = true;
   } catch (error) {
-    if (this.auth) throw new Error("robot has any error" + error.message);
-
     let phone_number: string = await input.text("Phone Number: ");
     let is_phone_number_true = true;
     const phoneRegex = /^[0-9]{11}$/;

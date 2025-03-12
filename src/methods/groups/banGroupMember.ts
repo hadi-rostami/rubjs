@@ -6,8 +6,10 @@ async function banGroupMember(
   member_guid: string,
   action: "Set" | "Unset" = "Set"
 ) {
-  if (!["Set", "Unset"].includes(action))
-    throw new Error(`${action} argument can only be in ["Set", "Unset"].`);
+  if (!["Set", "Unset"].includes(action)){
+    console.warn(`${action} argument can only be in ["Set", "Unset"]. Using default "Set".`);
+    action = "Set"
+  }
 
   return await this.builder("banGroupMember", {
     group_guid,

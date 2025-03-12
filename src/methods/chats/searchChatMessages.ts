@@ -6,8 +6,10 @@ async function searchChatMessages(
   search_text: string,
   type: "Text" | "Hashtag"
 ) {
-  if (!["Text", "Hashtag"].includes(type))
-    throw new Error('`type` argument can only be in ("text", "Hashtag").');
+  if (!["Text", "Hashtag"].includes(type)){
+    console.warn('`type` argument can only be in ("text", "Hashtag"). Using default "Text".');
+    type = "Text"
+  }
 
   return await this.builder("searchChatMessages", {
     object_guid,

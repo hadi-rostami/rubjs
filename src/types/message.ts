@@ -1,6 +1,10 @@
-import { Types , Client } from "..";
+import { Types, Client } from "..";
 
 const getOriginalType = (message) => {
+  if (!message?.message?.type) {
+    return console.log(message);
+  }
+
   if (message.message.type.includes("FileInline")) {
     return message.message.file_inline.type;
   }

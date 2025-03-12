@@ -6,8 +6,12 @@ async function deleteMessages(
   message_ids: string | string[],
   type: "Global" | "Local" = "Global"
 ) {
-  if (!["Global", "Local"].includes(type))
-    throw new Error('`type` argument can only be in ("Global", "Local").');
+  if (!["Global", "Local"].includes(type)) {
+    console.warn(
+      '`type` argument can only be in ("Global", "Local"). Using default "Global".'
+    );
+    type = "Global";
+  }
 
   if (typeof message_ids === "string") {
     message_ids = [message_ids];

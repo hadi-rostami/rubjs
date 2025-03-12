@@ -1,5 +1,4 @@
-import Client from '../..';
-
+import Client from "../..";
 
 async function createPoll(
   this: Client,
@@ -14,14 +13,16 @@ async function createPoll(
   reply_to_message_id?: string
 ) {
   if (options.length <= 1)
-    throw new Error(
+    return console.warn(
       "The `options` argument must have more than two string values."
     );
 
-  if (!["Quiz", "Regular"].includes(type))
-    throw new Error(
-      'The `type` argument can only be in `["Quiz", "Regular"]`.'
+  if (!["Quiz", "Regular"].includes(type)) {
+    console.warn(
+      'The `type` argument can only be in `["Quiz", "Regular"]`. Using default "Quiz".'
     );
+    type = "Quiz";
+  }
 
   const input = {
     object_guid,

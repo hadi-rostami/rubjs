@@ -24,7 +24,7 @@ class SQLiteSession {
       return callback();
     } catch (error) {
       console.error(`Error in ${operation}:`, error);
-      throw new Error(`Failed to execute ${operation}`);
+      console.warn(`Failed to execute ${operation}`);
     }
   }
 

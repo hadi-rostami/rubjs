@@ -54,10 +54,13 @@ async function editChannelInfo(
   }
 
   if (chat_history_for_new_members) {
-    if (!["Hidden", "Visible"].includes(chat_history_for_new_members))
-      throw new Error(
-        '`chat_history_for_new_members` argument can only be in `["Hidden", "Visible"]`.'
+    if (!["Hidden", "Visible"].includes(chat_history_for_new_members)) {
+      console.warn(
+        '`chat_history_for_new_members` should be in `["Hidden", "Visible"]`. Using default "Hidden".'
       );
+
+      chat_history_for_new_members = "Hidden";
+    }
 
     input.chat_history_for_new_members = chat_history_for_new_members;
     input.updated_parameters.push("chat_history_for_new_members");

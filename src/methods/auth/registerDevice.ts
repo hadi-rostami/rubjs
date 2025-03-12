@@ -36,7 +36,7 @@ async function getBrowser(
   let deviceModel = "Unknown";
 
   if (!deviceModelMatch) {
-    console.warn(`Cannot parse user-agent (${userAgent})`);
+    throw new Error(`Cannot parse user-agent (${userAgent})`);
   } else {
     deviceModel = `${deviceModelMatch[1]} ${deviceModelMatch[2]}`;
   }

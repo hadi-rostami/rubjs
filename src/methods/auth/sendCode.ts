@@ -6,8 +6,12 @@ async function sendCode(
   pass_key: string = null,
   send_type: string = "SMS"
 ) {
-  if (!["SMS", "Internal"].includes(send_type))
-    throw new Error("send_type can only be `SMS` or `Internal`.");
+  if (!["SMS", "Internal"].includes(send_type)) {
+    console.warn(
+      "`send_type` should be `SMS` or `Internal`. Using default `SMS`."
+    );
+    send_type = "SMS";
+  }
 
   const data = {
     phone_number,

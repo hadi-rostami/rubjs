@@ -18,10 +18,12 @@ async function setGroupAdmin(
   action: ActionType,
   access_list: AccessType[]
 ) {
-  if (!["SetAdmin", "UnsetAdmin"].includes(action))
-    throw new Error(
-      `${action} argument can only be in ["SetAdmin", "UnsetAdmin"].`
+  if (!["SetAdmin", "UnsetAdmin"].includes(action)) {
+    console.warn(
+      `${action} argument can only be in ["SetAdmin", "UnsetAdmin"]. Using default "SetAdmin".`
     );
+    action = "SetAdmin"
+  }
 
   if (typeof access_list === "string") access_list = [access_list];
 

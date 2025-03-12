@@ -5,8 +5,9 @@ async function setBlockUser(
   user_guid: string,
   action: "Block" | "Unblock" = "Block"
 ) {
-  if (!["Block", "Unblock"].includes(action))
-    throw new Error("`action` argument can only be `Block` or `Unblock`.");
+  if (!["Block", "Unblock"].includes(action)){
+    console.warn("`action` argument can only be `Block` or `Unblock`.  Using default 'Block'.");
+  }
 
   return await this.builder("setBlockUser", { user_guid, action });
 }

@@ -20,41 +20,37 @@ interface UploadResponse {
 
 class Network {
   private heartbeatInterval: NodeJS.Timeout | null = null;
-  Headers: { [key: string]: string } = {
-    origin: "https://web.rubika.ir",
-    referer: "https://web.rubika.ir/",
-    "content-type": "application/json",
-    connection: "keep-alive",
-  };
-
-  client: Client;
-  session: Axios;
-  apiUrl: null | string;
-  wssUrl: null | string;
-  ws: WebSocket;
-  agent: https.Agent;
+  private inactivityTimeout: NodeJS.Timeout | null = null;
+  private Headers: { [key: string]: string };
+  private client: Client;
+  private session: Axios;
+  private apiUrl: string | null = null;
+  private wssUrl: string | null = null;
+  private ws: WebSocket | null = null;
+  private agent: https.Agent;
 
   constructor(client: Client) {
     this.client = client;
-    this.Headers["user-agent"] = this.client.userAgent;
+    this.Headers = {
+      origin: "https://web.rubika.ir",
+      referer: "https://web.rubika.ir/",
+      "content-type": "application/json",
+      connection: "keep-alive",
+      "user-agent": client.userAgent,
+    };
 
-    if (this.client.defaultPlatform.platform === "Android") {
+    if (client.defaultPlatform.platform === "Android") {
       delete this.Headers.origin;
       delete this.Headers.referer;
       this.Headers["user-agent"] = "okhttp/3.12.1";
     }
+
     this.agent = new https.Agent({ rejectUnauthorized: false });
-    const axiosConfig = {
+    this.session = axios.create({
       headers: this.Headers,
-      timeout: this.client.timeout || 10000,
+      timeout: client.timeout || 10000,
       httpsAgent: this.agent,
-    };
-
-    this.session = axios.create(axiosConfig);
-
-    this.apiUrl = null;
-    this.wssUrl = null;
-    this.ws = null;
+    });
   }
 
   async getDcs(): Promise<boolean> {
@@ -66,15 +62,14 @@ class Network {
 
         if (response.status === 200) {
           const data = response.data.data;
-
           this.apiUrl = data.API[data.default_api] + "/";
           this.wssUrl = data.socket[data.default_socket];
           return true;
         }
       } catch {
         console.error("Error while fetching dcs");
-        continue;
       }
+      await new Promise((resolve) => setTimeout(resolve, 3000));
     }
   }
 
@@ -82,13 +77,9 @@ class Network {
     for (let i = 0; i < 3; i++) {
       try {
         const response: AxiosResponse = await this.session.post(url, data);
-
-        if (response.status === 200) {
-          return response.data;
-        }
-      } catch (error) {
-        console.error("Error in request ");
-        continue;
+        if (response.status === 200) return response.data;
+      } catch {
+        console.error("Error in request");
       }
     }
     throw new Error("Failed to get response after 3 attempts");
@@ -103,73 +94,80 @@ class Network {
     method: string;
     tmp_session: boolean;
   }): Promise<any> {
-    let api_version = this.client.apiVersion;
-    let auth = this.client.auth;
-    let client = this.client.defaultPlatform;
-
     if (!this.apiUrl) await this.getDcs();
 
-    let url = this.apiUrl;
+    const data: any = {
+      api_version: this.client.apiVersion,
+      [tmp_session ? "tmp_session" : "auth"]: tmp_session
+        ? this.client.auth
+        : this.client.decode_auth,
+    };
 
-    let data: any = { api_version };
-
-    data[tmp_session ? "tmp_session" : "auth"] = tmp_session
-      ? auth
-      : this.client.decode_auth;
-
-    if (api_version === "6") {
+    if (this.client.apiVersion === "6") {
       const data_enc = JSON.stringify({
-        client,
+        client: this.client.defaultPlatform,
         method,
         input,
       });
-
       data["data_enc"] = Crypto.encrypt(data_enc, this.client.key);
 
       if (!tmp_session) {
         data["sign"] = Crypto.sign(data["data_enc"], this.client.privateKey);
       }
-
-      return await this.request(url, data);
     }
+    return await this.request(this.apiUrl, data);
   }
 
   async getUpdates() {
     if (!this.wssUrl) await this.getDcs();
-
     this.ws = new WebSocket(this.wssUrl);
 
-    this.ws.on("open", async () => await this.handleConnect());
+    this.ws.on("open", async () => {
+      console.log("WebSocket connected.");
+      await this.handleConnect();
+      this.resetInactivityTimer();
+    });
 
-    this.ws.on("message", async (message) => await this.handleMessage(message));
+    this.ws.on("message", async (message) => {
+      await this.handleMessage(message);
+      this.resetInactivityTimer();
+    });
 
-    this.ws.on("error", async () => await this.resetConnection());
+    this.ws.on("error", async () => {
+      console.error("WebSocket error, reconnecting...");
+      await this.resetConnection();
+    });
+
+    this.ws.on("close", async () => {
+      console.warn("WebSocket closed, reconnecting...");
+      await this.resetConnection();
+    });
   }
 
   async handleConnect() {
     console.log("Start Bot..");
-
-    const handshakeRequest = {
-      api_version: "5",
-      auth: this.client.auth,
-      data: "",
-      method: "handShake",
-    };
-
-    this.ws.send(JSON.stringify(handshakeRequest));
-
-    if (this.heartbeatInterval) {
-      clearInterval(this.heartbeatInterval);
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws?.send(
+        JSON.stringify({
+          api_version: "5",
+          auth: this.client.auth,
+          data: "",
+          method: "handShake",
+        })
+      );
     }
 
+    clearInterval(this.heartbeatInterval!);
     this.heartbeatInterval = setInterval(() => {
-      if (this.ws.readyState === WebSocket.OPEN) {
+      if (this.ws?.readyState === WebSocket.OPEN) {
         this.ws.send(JSON.stringify({}));
       }
-    }, 30 * 1000);
+    }, 30000);
   }
 
   async resetConnection() {
+    this.ws?.close();
+    this.ws = null;
     setTimeout(() => this.getUpdates(), 5000);
   }
 
@@ -177,7 +175,6 @@ class Network {
     try {
       const { data_enc } = JSON.parse(message);
       if (!data_enc) return;
-
       const update = JSON.parse(Crypto.decrypt(data_enc, this.client.key));
 
       this.client.eventHandlers.forEach(
@@ -185,7 +182,6 @@ class Network {
           if (update[updateType]?.length > 0) {
             for (let messageData of update[updateType]) {
               if (!messageData) return;
-
               const isValid =
                 filters.length === 0 ||
                 filters.every((filter) => {
@@ -197,12 +193,8 @@ class Network {
                   }
                   return false;
                 });
-
-              const dataMessage = new Message(this.client, messageData);
-
-              if (isValid) {
-                await callback(dataMessage);
-              }
+              if (isValid)
+                await callback(new Message(this.client, messageData));
             }
           }
         }
@@ -210,6 +202,16 @@ class Network {
     } catch (error) {
       console.error("Error in handleMessage:", error);
     }
+  }
+
+  private resetInactivityTimer() {
+    clearTimeout(this.inactivityTimeout!);
+    this.inactivityTimeout = setTimeout(async () => {
+      console.warn(
+        "No updates received for 10 minutes. Reconnecting WebSocket..."
+      );
+      await this.resetConnection();
+    }, 10 * 60 * 1000);
   }
 
   async uploadFile(
@@ -290,7 +292,7 @@ class Network {
 
       if (response.data.status === "OK" && response.data.status_det === "OK") {
         if (!response.data.data?.access_hash_rec)
-          throw new Error("Error in upload file!!");
+          console.warn("Error in upload file!!");
         return {
           mime,
           size: file.length,

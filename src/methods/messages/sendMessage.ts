@@ -38,7 +38,7 @@ async function sendMessage(
       fileName = file_inline;
 
       if (!fs.existsSync(fileName)) {
-        throw new Error("File not found in the given path");
+        return console.warn("File not found in the given path");
       }
       file_inline = await fs.promises.readFile(fileName);
     } else if (!Buffer.isBuffer(file_inline)) {
