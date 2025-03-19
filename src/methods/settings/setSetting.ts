@@ -1,4 +1,3 @@
-import { interpolators } from "sharp";
 import Client from "../..";
 
 type AllSettingsType = "Nobody" | "Everybody" | "MyContacts";

@@ -145,6 +145,28 @@ class Filters {
   static isEvent(message: MessageUpdate): boolean {
     return !!Filters.findKey(message, "event_data");
   }
+
+  static startsWithCommand(text: string, object_guid?: string) {
+    return (message: MessageUpdate) => {
+      if (object_guid) {
+        if (object_guid !== message.object_guid) return false;
+      }
+      if (message?.message?.text) {
+        return message.message.text.startsWith(text);
+      }
+    };
+  }
+
+  static equalCommand(text: string, object_guid?: string) {
+    return (message: MessageUpdate) => {
+      if (object_guid) {
+        if (object_guid !== message.object_guid) return false;
+      }
+      if (message?.message?.text) {
+        return message.message.text === text;
+      }
+    };
+  }
 }
 
 export default Filters;

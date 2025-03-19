@@ -1,6 +1,7 @@
 import Methods from "./methods";
 import Network from "./network";
 import SQLiteSession from "./session";
+import { VoiceChatClient } from "./utils";
 
 interface Platform {
   app_name: string;
@@ -47,6 +48,7 @@ class Client extends Methods {
     filters: ((msg) => boolean)[] |((msg) => boolean)[][]  ;
     updateType: TypeUpdate;
   }[];
+  voiceChatClient: VoiceChatClient
 
   constructor(
     sessionFile: string,

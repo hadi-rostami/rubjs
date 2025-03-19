@@ -1,4 +1,5 @@
 import Filters from "./filters";
 import Utils from "./utils";
+import VoiceChatClient from "./VoiceChatClient";
 
-export { Filters, Utils };
+export { Filters, Utils, VoiceChatClient };

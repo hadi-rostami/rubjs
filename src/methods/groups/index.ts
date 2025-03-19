@@ -14,9 +14,11 @@ import getGroupInfo from "./getGroupInfo";
 import getGroupLink from "./getGroupLink";
 import getGroupMentionList from "./getGroupMentionList";
 import getGroupOnlineCount from "./getGroupOnlineCount";
+import getGroupVoiceChatParticipants from "./getGroupVoiceChatParticipants";
 import getGroupVoiceChatUpdates from "./getGroupVoiceChatUpdates";
 import groupPreviewByJoinLink from "./groupPreviewByJoinLink";
 import joinGroup from "./joinGroup";
+import joinGroupVoiceChat from "./joinGroupVoiceChat";
 import leaveGroup from "./leaveGroup";
 import leaveGroupVoiceChat from "./leaveGroupVoiceChat";
 import removeGroup from "./removeGroup";
@@ -54,4 +56,6 @@ export {
   setGroupDefaultAccess,
   setGroupLink,
   setGroupVoiceChatSetting,
+  joinGroupVoiceChat,
+  getGroupVoiceChatParticipants,
 };

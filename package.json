@@ -1,6 +1,6 @@
 {
   "name": "rubjs",
-  "version": "2.6.1",
+  "version": "2.7.6",
   "main": "rubjs/index.js",
   "types": "rubjs/index.d.ts",
   "keywords": [
@@ -30,6 +30,7 @@
     "music-metadata": "^10.9.0",
     "node-rsa": "^1.1.1",
     "sharp": "^0.33.5",
+    "wrtc": "^0.4.7",
     "ws": "^8.18.0"
   },
   "devDependencies": {

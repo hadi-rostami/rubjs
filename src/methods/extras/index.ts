@@ -6,13 +6,15 @@ import getProfileLinkItems from "./getProfileLinkItems";
 import getRelatedObjects from "./getRelatedObjects";
 import getTranscription from "./getTranscription";
 import join from "./join";
+import joinVoiceChat from "./joinVoiceChat";
 import leaveChat from "./leaveChat";
 import onEditMessages from "./onEditMessages";
 import reportObject from "./reportObject";
 import searchGlobalObjects from "./searchGlobalObjects";
+import sendVoiceChatActivity from "./sendVoiceChatActivity";
+import setVoiceChatState from "./setVoiceChatState";
 import transcribeVoice from "./transcribeVoice";
 import userIsAdmin from "./userIsAdmin";
-
 
 export {
   banMember,
@@ -28,5 +30,8 @@ export {
   searchGlobalObjects,
   transcribeVoice,
   userIsAdmin,
-  deleteMessagebyCount
+  deleteMessagebyCount,
+  joinVoiceChat,
+  setVoiceChatState,
+  sendVoiceChatActivity
 };

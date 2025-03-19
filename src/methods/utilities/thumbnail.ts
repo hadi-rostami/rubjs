@@ -2,8 +2,14 @@ import ffmpeg from "fluent-ffmpeg";
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
-import sharp from "sharp";
-import * as mm from "music-metadata";
+
+let sharp;
+
+try {
+  sharp = import("sharp");
+} catch (err) {
+  console.log("⚠️  Sharp module could not be loaded:", err.message);
+}
 
 class ThumbnailGenerator {
   static async getTime(videoPath: string): Promise<number> {

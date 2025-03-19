@@ -636,6 +636,27 @@ class Methods {
     return Extras.deleteMessagebyCount.apply(this, args);
   }
 
+  async joinVoiceChat(
+    this: Client,
+    ...args: Parameters<typeof Extras.joinVoiceChat>
+  ): Promise<any> {
+    return Extras.joinVoiceChat.apply(this, args);
+  }
+
+  async setVoiceChatState(
+    this: Client,
+    ...args: Parameters<typeof Extras.setVoiceChatState>
+  ): Promise<any> {
+    return Extras.setVoiceChatState.apply(this, args);
+  }
+
+  async sendVoiceChatActivity(
+    this: Client,
+    ...args: Parameters<typeof Extras.sendVoiceChatActivity>
+  ): Promise<any> {
+    return Extras.sendVoiceChatActivity.apply(this, args);
+  }
+
   // gif
 
   async addToMyGifSet(
@@ -848,6 +869,18 @@ class Methods {
     ...args: Parameters<typeof Groups.setGroupVoiceChatSetting>
   ): Promise<any> {
     return Groups.setGroupVoiceChatSetting.apply(this, args);
+  }
+  async joinGroupVoiceChat(
+    this: Client,
+    ...args: Parameters<typeof Groups.joinGroupVoiceChat>
+  ): Promise<any> {
+    return Groups.joinGroupVoiceChat.apply(this, args);
+  }
+  async getGroupVoiceChatParticipants(
+    this: Client,
+    ...args: Parameters<typeof Groups.getGroupVoiceChatParticipants>
+  ): Promise<any> {
+    return Groups.getGroupVoiceChatParticipants.apply(this, args);
   }
 
   // messages
