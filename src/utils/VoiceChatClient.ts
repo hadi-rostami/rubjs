@@ -1,5 +1,6 @@
 import { spawn, ChildProcessWithoutNullStreams } from "child_process";
-import { RTCPeerConnection, RTCSessionDescription, nonstandard } from "wrtc";
+import { optionalRequire } from "optional-require";
+const optionalWrtc = optionalRequire("wrtc");
 import Client from "..";
 
 class VoiceChatClient {
@@ -18,14 +19,20 @@ class VoiceChatClient {
   private lastPosition: number = 0;
   private intervalId?: NodeJS.Timeout;
   private isManualSkip: boolean = false;
-  private getAnyMusicCallback: () => Promise<string>;
+  private getMusicUrl: () => Promise<string>;
 
-  constructor(getAnyMusicCallback?: () => Promise<string>) {
-    this.pc = new RTCPeerConnection();
-    this.source = new nonstandard.RTCAudioSource();
+  constructor(getMusicUrl?: () => Promise<string>) {
+    if (!optionalWrtc) {
+      throw new Error(
+        "wrtc module is not installed. Some features may be disabled."
+      );
+    }
+
+    this.pc = new optionalWrtc.RTCPeerConnection();
+    this.source = new optionalWrtc.nonstandard.RTCAudioSource();
     this.track = this.source.createTrack();
     this.pc.addTrack(this.track);
-    this.getAnyMusicCallback = getAnyMusicCallback;
+    this.getMusicUrl = getMusicUrl;
   }
 
   async play(filePath?: string) {
@@ -33,8 +40,8 @@ class VoiceChatClient {
 
     if (!filePath) {
       if (this.playlist.length === 0) {
-        if (this.getAnyMusicCallback) {
-          this.playlist = [await this.getAnyMusicCallback()];
+        if (this.getMusicUrl) {
+          this.playlist = [await this.getMusicUrl()];
         } else return;
       }
 
@@ -149,8 +156,8 @@ class VoiceChatClient {
       this.isPaused = true;
       this.play(this.playlist[this.currentIndex]);
     } else {
-      if (this.getAnyMusicCallback) {
-        this.playlist = [...this.playlist, await this.getAnyMusicCallback()];
+      if (this.getMusicUrl) {
+        this.playlist = [...this.playlist, await this.getMusicUrl()];
         await this.next();
       }
     }
@@ -198,7 +205,7 @@ class VoiceChatClient {
     const sdpAnswer = connect.sdp_answer_data;
 
     await this.pc.setRemoteDescription(
-      new RTCSessionDescription({ type: "answer", sdp: sdpAnswer })
+      new optionalWrtc.RTCSessionDescription({ type: "answer", sdp: sdpAnswer })
     );
     await client.setVoiceChatState(chatGuid, voiceChatId);
   }

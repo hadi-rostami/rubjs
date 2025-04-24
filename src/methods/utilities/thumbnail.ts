@@ -1,18 +1,18 @@
-import ffmpeg from "fluent-ffmpeg";
 import fs from "fs/promises";
 import path from "path";
 import os from "os";
-
-let sharp;
-
-try {
-  sharp = import("sharp");
-} catch (err) {
-  console.log("⚠️  Sharp module could not be loaded:", err.message);
-}
+import { optionalRequire } from "optional-require";
+const sharp = optionalRequire("sharp", { default: true });
+const ffmpeg = optionalRequire("fluent-ffmpeg", { default: true });
 
 class ThumbnailGenerator {
   static async getTime(videoPath: string): Promise<number> {
+    if (!ffmpeg) {
+      throw new Error(
+        "fluent-ffmpeg module is not installed. Some features may be disabled."
+      );
+    }
+
     return new Promise((resolve, reject) => {
       ffmpeg.ffprobe(videoPath, (err, metadata) => {
         if (err) {
@@ -27,6 +27,12 @@ class ThumbnailGenerator {
   }
 
   static async fromVideo(videoPath: string): Promise<string> {
+    if (!ffmpeg) {
+      throw new Error(
+        "fluent-ffmpeg module is not installed. Some features may be disabled."
+      );
+    }
+
     const tempImagePath = path.join(os.tmpdir(), `thumbnail_${Date.now()}.png`);
 
     try {
@@ -59,6 +65,12 @@ class ThumbnailGenerator {
     imagePath: string,
     width: number = 320
   ): Promise<string> {
+    if (!sharp) {
+      throw new Error(
+        "sharp module is not installed. Some features may be disabled."
+      );
+    }
+
     try {
       const buffer = await sharp(imagePath).resize(width).toBuffer();
       return buffer.toString("base64");

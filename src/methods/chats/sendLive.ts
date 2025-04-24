@@ -8,7 +8,7 @@ async function sendLive(
   image: string,
   device_type = "Software"
 ) {
-  const thumb_inline = await ThumbnailGenerator.fromImage(image);
+  const thumb_inline = await ThumbnailGenerator.fromVideo(image);
 
   return await this.builder("sendLive", {
     thumb_inline,

@@ -1,12 +1,13 @@
 {
   "name": "rubjs",
-  "version": "2.7.6",
+  "version": "2.8.2",
   "main": "rubjs/index.js",
   "types": "rubjs/index.d.ts",
   "keywords": [
     "javascript",
     "Rubika",
-    "library"
+    "library",
+    "rubjs"
   ],
   "module": "rubjs/index.js",
   "exports": {
@@ -24,13 +25,9 @@
   },
   "dependencies": {
     "axios": "^1.7.9",
-    "better-sqlite3": "^11.8.1",
-    "fluent-ffmpeg": "^2.1.3",
     "input": "^1.0.1",
-    "music-metadata": "^10.9.0",
     "node-rsa": "^1.1.1",
-    "sharp": "^0.33.5",
-    "wrtc": "^0.4.7",
+    "optional-require": "^1.1.8",
     "ws": "^8.18.0"
   },
   "devDependencies": {

@@ -98,6 +98,7 @@ interface Message {
   type: string;
   reply_to_message_id: string;
   author_type: string;
+  author_title: string;
   author_object_guid: string;
   allow_transcription?: boolean;
   file_inline?: FileInline;

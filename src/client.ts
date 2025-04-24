@@ -1,6 +1,6 @@
 import Methods from "./methods";
 import Network from "./network";
-import SQLiteSession from "./session";
+import SessionManager from "./session";
 import { VoiceChatClient } from "./utils";
 
 interface Platform {
@@ -41,14 +41,14 @@ class Client extends Methods {
   sessionFile: string;
   platform: PlatformType;
   userGuid: string | null;
-  sessionDb: SQLiteSession;
+  sessionDb: SessionManager;
   initialize: boolean;
   eventHandlers: {
     callback: Function;
-    filters: ((msg) => boolean)[] |((msg) => boolean)[][]  ;
+    filters: ((msg) => boolean)[] | ((msg) => boolean)[][];
     updateType: TypeUpdate;
   }[];
-  voiceChatClient: VoiceChatClient
+  voiceChatClient: VoiceChatClient;
 
   constructor(
     sessionFile: string,
@@ -68,22 +68,12 @@ class Client extends Methods {
     this.timeout = timeout ?? 0;
     this.eventHandlers = [];
     this.platform = platform;
-    this.sessionDb = new SQLiteSession(sessionFile);
+    this.sessionDb = new SessionManager(sessionFile);
     this.network = new Network(this);
     this.auth = null;
     this.privateKey = null;
     this.eventHandlers = [];
     this.initialize = false;
-
-    const DBInformation = this.sessionDb.getSession();
-    if (DBInformation) {
-      this.auth = DBInformation.auth;
-      this.userGuid = DBInformation.guid;
-      this.privateKey = DBInformation.private_key;
-
-      if (typeof DBInformation.agent === "string")
-        this.userAgent = DBInformation.agent || this.userAgent;
-    }
 
     this.start();
   }

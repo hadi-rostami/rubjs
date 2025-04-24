@@ -3,6 +3,17 @@ import Crypto from "../../crypto";
 import input from "input";
 
 async function start(this: Client): Promise<void> {
+  const DBInformation = this.sessionDb.getSession();
+
+  if (DBInformation) {
+    this.auth = DBInformation.auth;
+    this.userGuid = DBInformation.guid;
+    this.privateKey = DBInformation.private_key;
+
+    if (typeof DBInformation.agent === "string")
+      this.userAgent = DBInformation.agent || this.userAgent;
+  }
+
   try {
     this.key = Buffer.from(Crypto.passphrase(this.auth), "utf8");
     this.decode_auth = Crypto.decode_auth(this.auth);
@@ -63,19 +74,19 @@ async function start(this: Client): Promise<void> {
         this.auth = response.auth;
         this.decode_auth = Crypto.decode_auth(this.auth);
 
-        this.sessionDb.saveSession(
-          response.user.phone,
-          this.auth,
-          response.user.user_guid,
-          this.userAgent,
-          this.privateKey
-        );
+        this.sessionDb.saveSession({
+          phone: response.user.phone,
+          auth: this.auth,
+          guid: response.user.user_guid,
+          agent: this.userAgent,
+          private_key: this.privateKey,
+        });
 
         await this.registerDevice();
         break;
       }
     }
-    
+
     this.initialize = true;
   }
 }

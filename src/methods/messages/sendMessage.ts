@@ -1,8 +1,9 @@
 import * as fs from "fs";
 import Client from "../..";
-import { IAudioMetadata, parseBuffer } from "music-metadata";
+import { optionalRequire } from "optional-require";
 import { thumbnail } from "../utilities";
 import Markdown from "../../parser";
+const optionalMusicMetadata = optionalRequire("music-metadata");
 
 async function sendMessage(
   this: Client,
@@ -23,7 +24,7 @@ async function sendMessage(
   let duration: number = 5000;
   let file_uploaded;
   let fileName: string | null = null;
-  let audio_data: IAudioMetadata;
+  let audio_data: any;
 
   let input: Record<string, any> = {
     object_guid,
@@ -60,7 +61,13 @@ async function sendMessage(
     if (["Music", "Voice"].includes(type)) {
       thumb = false;
       if (audio_info) {
-        audio_data = await parseBuffer(file_inline);
+        if (!optionalMusicMetadata) {
+          throw new Error(
+            "music-metadata module is not installed. Some features may be disabled."
+          );
+        }
+
+        audio_data = await optionalMusicMetadata.parseBuffer(file_inline);
         duration = audio_data.format.duration || 5000;
       }
     }
@@ -102,7 +109,6 @@ async function sendMessage(
   if (file_inline) {
     input["file_inline"] = file_uploaded;
   }
-
 
   const result = await this.builder("sendMessage", input);
 

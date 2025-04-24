@@ -28,7 +28,6 @@ async function getBrowser(
   userAgent: string,
   langCode: string,
   appVersion: string,
-  ...args: any[]
 ): Promise<BrowserInfo> {
   const deviceModelMatch = userAgent
     .toLowerCase()

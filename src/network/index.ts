@@ -180,6 +180,27 @@ class Network {
       this.client.eventHandlers.forEach(
         async ({ callback, filters = [], updateType }) => {
           if (update[updateType]?.length > 0) {
+            let username = null;
+            const isMUp = updateType === "message_updates";
+
+            if (isMUp) {
+              if (update?.show_notifications?.length > 0) {
+                const notification = update?.show_notifications?.[0];
+                const obg = notification?.message_data?.object_guid;
+
+                if (obg?.startsWith("u0")) {
+                  username = notification.title;
+                } else if (obg?.startsWith("g0")) {
+                  username = notification.text?.split(":")[0];
+                }
+              } else {
+                const chat_updates = update?.chat_updates?.[0];
+                username =
+                  chat_updates?.chat?.last_message?.author_title ||
+                  "Unknown User";
+              }
+            }
+
             for (let messageData of update[updateType]) {
               if (!messageData) return;
               const isValid =
@@ -193,6 +214,11 @@ class Network {
                   }
                   return false;
                 });
+
+              if (isMUp && messageData?.message) {
+                messageData.message.author_title = username;
+              }
+
               if (isValid)
                 await callback(new Message(this.client, messageData));
             }
@@ -337,6 +363,7 @@ class Network {
       try {
         const config: AxiosRequestConfig = {
           headers: chunk_headers,
+          responseType: "arraybuffer",
         };
         const response = await axios.post(
           `${base_url}/GetFile.ashx`,
