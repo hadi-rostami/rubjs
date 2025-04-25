@@ -130,7 +130,7 @@ class Message implements Types.DecoratorsTypes.MessageUpdate {
   async getReplyMessage(object_guid?: string, message_id?: string) {
     const result = await this.client.getMessagesByID(
       object_guid || this.object_guid,
-      message_id || [this.message_id]
+      message_id || [this.message.reply_to_message_id]
     );
 
     return result.messages[0];

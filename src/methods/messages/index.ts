@@ -23,6 +23,7 @@ import setPinMessage from "./setPinMessage";
 import votePoll from "./votePoll";
 import sendText from "./sendText";
 import getMessages from "./getMessages";
+import sendFileInline from "./sendFileInline";
 
 export {
   actionOnMessageReaction,
@@ -49,5 +50,6 @@ export {
   setPinMessage,
   votePoll,
   sendText,
-  getMessages
+  getMessages,
+  sendFileInline
 };

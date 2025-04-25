@@ -1060,6 +1060,13 @@ class Methods {
     return Messages.getMessages.apply(this, args);
   }
 
+  async sendFileInline(
+    this: Client,
+    ...args: Parameters<typeof Messages.sendFileInline>
+  ): Promise<any> {
+    return Messages.sendFileInline.apply(this, args);
+  }
+
   // settings
 
   async deleteFolder(

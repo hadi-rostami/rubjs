@@ -1,4 +1,4 @@
-import MessageUpdate, { ChatUpdates } from "./decorators";
+import MessageUpdate, { ChatUpdates, FileInline } from "./decorators";
 
 interface Reaction {
   user_guids: string[];
@@ -23,6 +23,7 @@ interface Message {
   time?: string;
   is_edited?: boolean;
   type: string;
+  file_inline: FileInline
   author_type: string;
   author_object_guid: string;
   allow_transcription?: boolean;
