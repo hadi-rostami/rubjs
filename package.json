@@ -1,6 +1,6 @@
 {
   "name": "rubjs",
-  "version": "2.8.4",
+  "version": "2.8.7",
   "main": "rubjs/index.js",
   "types": "rubjs/index.d.ts",
   "keywords": [

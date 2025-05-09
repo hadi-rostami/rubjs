@@ -146,12 +146,32 @@ class Filters {
     return !!Filters.findKey(message, "event_data");
   }
 
-  static startsWithCommand(text: string, object_guid?: string) {
+
+  static isLength(length: number, object_guid?: string) {
     return (message: MessageUpdate) => {
       if (object_guid) {
         if (object_guid !== message.object_guid) return false;
       }
       if (message?.message?.text) {
+        return message?.message?.text.length === length;
+      }
+      return false;
+    };
+  }
+
+  static startsWithCommand(
+    text: string,
+    object_guid?: string,
+    length?: number
+  ) {
+    return (message: MessageUpdate) => {
+      if (object_guid) {
+        if (object_guid !== message.object_guid) return false;
+      }
+      if (message?.message?.text) {
+        if (length) {
+          if (message?.message?.text.length !== length) return false;
+        }
         return message.message.text.startsWith(text);
       }
     };

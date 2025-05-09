@@ -29,9 +29,10 @@ async function sendFileInline(
     object_guid,
     rnd: Math.floor(Math.random() * 1e6 + 1),
     reply_to_message_id,
-    file_inline,
-    ...Markdown.toMetadata(caption)
+    file_inline
   };
+
+  if (caption) input = { ...input, ...Markdown.toMetadata(caption) };
 
   const result = await this.builder("sendMessage", input);
   

@@ -27,6 +27,7 @@ class Network {
   private wssUrl: string | null = null;
   private ws: WebSocket | null = null;
   private agent: https.Agent;
+  private reconnecting: boolean;
   session: Axios;
 
   constructor(client: Client) {
@@ -38,6 +39,7 @@ class Network {
       connection: "keep-alive",
       "user-agent": client.userAgent,
     };
+    this.reconnecting = false;
 
     if (client.defaultPlatform.platform === "Android") {
       delete this.Headers.origin;
@@ -124,23 +126,29 @@ class Network {
 
     this.ws.on("open", async () => {
       console.log("WebSocket connected.");
+      this.reconnecting = false;
       await this.handleConnect();
       this.resetInactivityTimer();
     });
-
     this.ws.on("message", async (message) => {
       await this.handleMessage(message);
       this.resetInactivityTimer();
     });
 
     this.ws.on("error", async () => {
-      console.error("WebSocket error, reconnecting...");
-      await this.resetConnection();
+      if (!this.reconnecting) {
+        console.error("WebSocket error, reconnecting...");
+        this.reconnecting = true;
+        await this.resetConnection();
+      }
     });
 
     this.ws.on("close", async () => {
-      console.warn("WebSocket closed, reconnecting...");
-      await this.resetConnection();
+      if (!this.reconnecting) {
+        console.warn("WebSocket closed, reconnecting...");
+        this.reconnecting = true;
+        await this.resetConnection();
+      }
     });
   }
 
@@ -168,7 +176,10 @@ class Network {
   async resetConnection() {
     this.ws?.close();
     this.ws = null;
-    setTimeout(() => this.getUpdates(), 5000);
+    setTimeout(async () => {
+      await this.getUpdates();
+      this.reconnecting = false;
+    }, 5000);
   }
 
   async handleMessage(message: string) {
