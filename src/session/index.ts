@@ -9,15 +9,23 @@ interface SessionData {
   private_key: string;
 }
 
+interface SessionType {
+  iv: string;
+  encryptedData: string;
+}
+
 class SessionManager {
   private secretKey: string;
   private filename: string;
   private iv: Buffer;
+  private sessionData: SessionType | undefined;
 
-  constructor(filename: string) {
+  constructor(filename: string | SessionType) {
     this.secretKey = "12345678901234567890123456789012";
     this.iv = crypto.randomBytes(16);
-    this.filename = filename + ".json";
+    this.filename =
+      typeof filename === "string" ? `${filename}.json` : `${Date.now()}.json`;
+    this.sessionData = typeof filename !== "string" && filename;
   }
 
   private encrypt(sessionData: SessionData): string {
@@ -54,7 +62,7 @@ class SessionManager {
 
   public getSession(): SessionData | null {
     try {
-      if (!fs.existsSync(this.filename)) {
+      if (!this.sessionData && !fs.existsSync(this.filename)) {
         const defaultSessionData: SessionData = {
           phone: "",
           auth: "",
@@ -66,9 +74,13 @@ class SessionManager {
         this.saveSession(defaultSessionData);
         return defaultSessionData;
       }
-
-      const rawData = fs.readFileSync(this.filename, "utf8");
-      const parsedData = JSON.parse(rawData);
+      let parsedData;
+      if (this.sessionData) {
+        parsedData = this.sessionData;
+      } else {
+        const rawData = fs.readFileSync(this.filename, "utf8");
+        parsedData = JSON.parse(rawData);
+      }
 
       return this.decrypt(
         parsedData.encryptedData,

@@ -1,23 +1,18 @@
 import Client from "./client";
 import Crypto from "./crypto";
 import * as Types from "./types";
-import {
-  Filters,
-  Utils,
-  VoiceChatClient,
-  SendLiveClient,
-  LoginClient,
-} from "./utils";
+import { Filters, Utils } from "./utils";
+import { VoiceChatClient, SendLiveClient, LoginClient } from "./clients";
 
 export default Client;
 
 export {
-  Client,
-  Crypto,
   Utils,
-  VoiceChatClient,
-  Filters,
   Types,
-  SendLiveClient,
+  Crypto,
+  Client,
+  Filters,
   LoginClient,
+  SendLiveClient,
+  VoiceChatClient
 };

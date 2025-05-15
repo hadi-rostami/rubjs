@@ -64,8 +64,8 @@ class LoginClient {
 
   static async signIn(
     phone_code: string,
-    sessionPath: string,
-    datas: AuthResult
+    datas: AuthResult,
+    sessionPath?: string
   ) {
     const network = new Network();
     const [publicKey, privateKey] = Crypto.createKeys();
@@ -93,18 +93,21 @@ class LoginClient {
     auth.key = Buffer.from(Crypto.passphrase(sampleAuth), "utf8");
     auth.auth = sampleAuth;
     auth.decode_auth = Crypto.decode_auth(sampleAuth);
-    const session = new SessionManager(sessionPath);
+    await this.registerDevice(network, auth);
 
-    session.saveSession({
+    const sessionData = {
       phone: response.user.phone,
       auth: auth.auth,
       guid: response.user.user_guid,
       agent: network.userAgent,
       private_key: privateKey,
-    });
+    };
 
-    await this.registerDevice(network, auth);
-    return { isOk: true, status: "Sucessfull" };
+    if (sessionPath) {
+      const session = new SessionManager(sessionPath);
+      session.saveSession(sessionData);
+    }
+    return { isOk: true, status: "Sucessfull", sessionData };
   }
 
   static async registerDevice(network: Network, datas: AuthFace) {
@@ -113,8 +116,6 @@ class LoginClient {
       network.defaultPlatform.lang_code,
       network.defaultPlatform.app_version
     );
-
-    const sendData = {};
 
     await network.bulder("registerDevice", browserData, datas);
   }

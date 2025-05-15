@@ -1,7 +1,7 @@
 import Methods from "./methods";
 import Network from "./network";
 import SessionManager from "./session";
-import { VoiceChatClient } from "./utils";
+import { VoiceChatClient } from "./clients";
 
 interface Platform {
   app_name: string;
@@ -18,6 +18,11 @@ type TypeUpdate =
   | "show_notifications";
 
 type PlatformType = "Web" | "Android";
+
+interface SessionType {
+  iv: string;
+  encryptedData: string;
+}
 
 class Client extends Methods {
   defaultPlatform: Platform = {
@@ -38,7 +43,7 @@ class Client extends Methods {
   timeout: number;
   network: Network;
   privateKey: string | null;
-  sessionFile: string;
+  sessionFile: string | SessionType;
   platform: PlatformType;
   userGuid: string | null;
   sessionDb: SessionManager;
@@ -51,7 +56,7 @@ class Client extends Methods {
   voiceChatClient: VoiceChatClient;
 
   constructor(
-    sessionFile: string,
+    sessionFile: string | SessionType,
     timeout?: number,
     platform: PlatformType = "Web"
   ) {
@@ -68,8 +73,8 @@ class Client extends Methods {
     this.timeout = timeout ?? 0;
     this.eventHandlers = [];
     this.platform = platform;
-    this.sessionDb = new SessionManager(sessionFile);
     this.network = new Network(this);
+    this.sessionDb = new SessionManager(sessionFile);
     this.auth = null;
     this.privateKey = null;
     this.eventHandlers = [];
