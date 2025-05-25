@@ -214,6 +214,11 @@ class Network {
 
             for (let messageData of update[updateType]) {
               if (!messageData) return;
+
+              messageData = {
+                ...messageData,
+                client_guid: this.client.userGuid,
+              };
               const isValid =
                 filters.length === 0 ||
                 filters.every((filter) => {

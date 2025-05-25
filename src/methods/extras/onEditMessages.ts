@@ -12,8 +12,8 @@ function onEditMessages(
     try {
       const messagesupdate = await this.getMessagesUpdates(object_guid, state);
       const newMessagesIDs = new Set<string>();
-
-      for (const message of messagesupdate.updated_messages) {
+      if (!messagesupdate?.updated_messages) return;
+      for (const message of messagesupdate?.updated_messages) {
         if (message.action === "Edit" && !messagesIDs.has(message.message_id)) {
           messagesIDs.add(message.message_id);
           await callback(message);

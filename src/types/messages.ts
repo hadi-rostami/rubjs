@@ -23,7 +23,7 @@ interface Message {
   time?: string;
   is_edited?: boolean;
   type: string;
-  file_inline: FileInline
+  file_inline: FileInline;
   author_type: string;
   author_object_guid: string;
   allow_transcription?: boolean;
@@ -64,7 +64,9 @@ interface MessageUpdateBase {
 }
 
 interface EditMessage {
-  message_update: MessageUpdateBase & { message: { text: string; is_edited: boolean } };
+  message_update: MessageUpdateBase & {
+    message: { text: string; is_edited: boolean };
+  };
   chat_update: ChatWithLastMessage;
 }
 
@@ -169,7 +171,6 @@ interface SetPinMessage {
   status: string;
 }
 
-
 interface RequestSendFile {
   id: string;
   dc_id: string;
@@ -201,5 +202,5 @@ export {
   SendMessageResult,
   SetPinMessage,
   RequestSendFile,
-  GetMessageShareUrl
+  GetMessageShareUrl,
 };

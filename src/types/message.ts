@@ -22,6 +22,7 @@ class Message implements Types.DecoratorsTypes.MessageUpdate {
   object_guid: string;
   type: string;
   state: string;
+  client_guid: string;
 
   declare client: Client;
   declare originalType: string;

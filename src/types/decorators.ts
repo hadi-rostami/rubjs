@@ -127,6 +127,7 @@ interface MessageUpdate {
   object_guid: string;
   type: string;
   state: string;
+  client_guid: string;
 }
 
 interface ChatUpdates {
@@ -182,7 +183,7 @@ export {
   ShowActivities,
   ShowNotifications,
   Message,
-  FileInline
+  FileInline,
 };
 
 export default MessageUpdate;
