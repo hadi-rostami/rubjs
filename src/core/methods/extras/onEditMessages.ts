@@ -1,4 +1,4 @@
-import Message from "../../../types/message.type";
+import Message from "../../context/message.type";
 import Client from "../../client";
 
 function onEditMessages(

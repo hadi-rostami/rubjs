@@ -4,229 +4,176 @@ const optionalWrtc = optionalRequire('wrtc');
 import Client from '..';
 
 class VoiceChatClient {
-	private pc: RTCPeerConnection;
-	private source: any;
-	private track: any;
-	private ffmpeg?: ChildProcessWithoutNullStreams;
-	private buffer: Buffer = Buffer.alloc(0);
-	private frameSize: number = 960;
-	private playlist: string[] = [];
-	private currentIndex: number = 0;
-	private chatGuid?: string;
-	private voiceChatId?: string;
-	private client?: Client;
-	private isPaused: boolean = false;
-	private lastPosition: number = 0;
-	private intervalId?: NodeJS.Timeout;
-	private isManualSkip: boolean = false;
-	private getMusicUrl?: () => Promise<string>;
+  private pc: RTCPeerConnection;
+  private source: any;
+  private track: any;
+  private ffmpeg?: ChildProcessWithoutNullStreams;
+  private frameSize = 960 * 2; // 960 samples * 2 bytes
+  private playlist: string[] = [];
+  private currentIndex = 0;
+  private chatGuid?: string;
+  private voiceChatId?: string;
+  private client?: Client;
+  private isPaused = false;
+  private lastPosition = 0;
+  private audioTimer?: NodeJS.Timeout;
+  private updateTimers: NodeJS.Timeout[] = [];
+  private isManualSkip = false;
+  private getMusicUrl?: () => Promise<string>;
 
-	constructor(getMusicUrl?: () => Promise<string>) {
-		if (!optionalWrtc) {
-			throw new Error(
-				'wrtc module is not installed. Some features may be disabled.',
-			);
-		}
+  constructor(getMusicUrl?: () => Promise<string>) {
+    if (!optionalWrtc) {
+      throw new Error('wrtc module is not installed.');
+    }
 
-		this.pc = new optionalWrtc.RTCPeerConnection();
-		this.source = new optionalWrtc.nonstandard.RTCAudioSource();
-		this.track = this.source.createTrack();
-		this.pc.addTrack(this.track);
-		this.getMusicUrl = getMusicUrl;
-	}
+    this.pc = new optionalWrtc.RTCPeerConnection();
+    this.source = new optionalWrtc.nonstandard.RTCAudioSource();
+    this.track = this.source.createTrack();
+    this.pc.addTrack(this.track);
+    this.getMusicUrl = getMusicUrl;
+  }
 
-	async play(filePath?: string) {
-		if (this.ffmpeg) this.stop();
+  async play(filePath?: string) {
+    this.stop(); // clean up previous
 
-		if (!filePath) {
-			if (this.playlist.length === 0) {
-				if (this.getMusicUrl) {
-					this.playlist = [await this.getMusicUrl()];
-				} else return;
-			}
+    if (!filePath) {
+      if (!this.playlist.length && this.getMusicUrl) {
+        this.playlist = [await this.getMusicUrl()];
+      }
+      filePath = this.playlist[this.currentIndex];
+    }
 
-			filePath = this.playlist[this.currentIndex];
-		}
+    if (!filePath || !this.chatGuid || !this.voiceChatId || !this.client) {
+      throw new Error('Voice chat not initialized.');
+    }
 
-		if (!this.chatGuid || !this.voiceChatId || !this.client) {
-			throw new Error(
-				'Voice chat not initialized. Call `joinVoiceChat` first.',
-			);
-		}
+    this.isPaused = false;
+    this.isManualSkip = false;
 
-		this.isPaused = false;
-		this.isManualSkip = false;
-		this.buffer = Buffer.alloc(0);
+    const seekArgs = this.lastPosition > 0 ? ['-ss', this.lastPosition.toString()] : [];
 
-		const seekArgs =
-			this.lastPosition > 0 ? ['-ss', this.lastPosition.toString()] : [];
+    this.ffmpeg = spawn('ffmpeg', [
+      '-loglevel', 'quiet',
+      '-re',
+      '-threads', '1',
+      '-protocol_whitelist', 'file,http,https,tcp,tls',
+      ...seekArgs,
+      '-i', filePath,
+      '-acodec', 'pcm_s16le',
+      '-ar', '48000',
+      '-ac', '1',
+      '-f', 's16le',
+      'pipe:1',
+    ]);
 
-		this.ffmpeg = spawn('ffmpeg', [
-			'-loglevel',
-			'quiet',
-			'-re',
-			'-threads',
-			'1',
-			'-protocol_whitelist',
-			'file,http,https,tcp,tls',
-			...seekArgs,
-			'-i',
-			filePath,
-			'-acodec',
-			'pcm_s16le',
-			'-ar',
-			'48000',
-			'-ac',
-			'1',
-			'-f',
-			's16le',
-			'pipe:1',
-		]);
+    this.audioTimer = setInterval(() => {
+      if (!this.ffmpeg || this.isPaused) return;
+      const chunk = this.ffmpeg.stdout.read(this.frameSize);
+      if (!chunk) return;
 
-		if (this.ffmpeg?.stdout) {
-			this.ffmpeg.stdout.on('readable', () => {
-				let chunk;
-				while ((chunk = this.ffmpeg!.stdout!.read(this.frameSize)) !== null) {
-					if (this.isPaused) return;
+      const samples = new Int16Array(chunk.buffer, chunk.byteOffset, chunk.length / 2);
+      this.source.onData({ samples, sampleRate: 48000 });
+      this.lastPosition += 0.02;
+    }, 20); // 20ms = 960 samples
 
-					const samples = new Int16Array(
-						chunk.buffer,
-						chunk.byteOffset,
-						chunk.length / 2,
-					);
-					const trimmedSamples = samples.slice(0, 960);
-					this.source.onData({ samples: trimmedSamples, sampleRate: 48000 });
-					this.lastPosition += 0.02;
-				}
-			});
-		}
+    this.ffmpeg.on('close', async () => {
+      clearInterval(this.audioTimer);
+      if (!this.isManualSkip && !this.isPaused) {
+        await this.next();
+      }
+      this.isManualSkip = false;
+    });
 
-		this.ffmpeg.on('close', async (code) => {
-			if (!this.isManualSkip && code !== null && !this.isPaused) {
-				await this.next();
-			}
-			this.isManualSkip = false;
-		});
+    this.setTimers();
+  }
 
-		this.clearIntervals();
+  stop() {
+    this.ffmpeg?.kill();
+    this.ffmpeg = undefined;
+    this.isPaused = true;
+    clearInterval(this.audioTimer);
+    this.clearTimers();
+  }
 
-		this.intervalId = setInterval(async () => {
-			try {
-				if (!this.client || !this.chatGuid || !this.voiceChatId) return;
+  resume() {
+    if (this.isPaused) this.play(this.playlist[this.currentIndex]);
+  }
 
-				await this.client.getGroupVoiceChatUpdates(
-					this.chatGuid,
-					this.voiceChatId,
-				);
-			} catch {}
-		}, 10 * 1000);
+  async next() {
+    if (this.currentIndex + 1 < this.playlist.length) {
+      this.isManualSkip = true;
+      this.currentIndex++;
+      this.lastPosition = 0;
+      this.play(this.playlist[this.currentIndex]);
+    } else if (this.getMusicUrl) {
+      this.playlist.push(await this.getMusicUrl());
+      await this.next();
+    }
+  }
 
-		this.intervalId = setInterval(async () => {
-			try {
-				if (
-					this.isPaused ||
-					!this.client ||
-					!this.chatGuid ||
-					!this.voiceChatId ||
-					!this.client.userGuid
-				)
-					return;
-				await this.client.sendVoiceChatActivity(
-					this.chatGuid,
-					this.voiceChatId,
-					this.client.userGuid,
-				);
-			} catch {}
-		}, 2 * 1000);
-	}
+  previous() {
+    if (this.currentIndex > 0) {
+      this.isManualSkip = true;
+      this.currentIndex--;
+      this.lastPosition = 0;
+      this.play(this.playlist[this.currentIndex]);
+    }
+  }
 
-	stop() {
-		if (this.ffmpeg) {
-			this.ffmpeg.kill();
-			this.ffmpeg = undefined;
-			this.isPaused = true;
-			this.buffer = Buffer.alloc(0);
-		}
-	}
+  addToPlaylist(filePath: string) {
+    this.playlist.push(filePath);
+  }
 
-	resume() {
-		if (this.isPaused) this.play();
-	}
+  removeFromPlaylist(filePath: string) {
+    const index = this.playlist.indexOf(filePath);
+    if (index !== -1) {
+      this.playlist.splice(index, 1);
+      if (index <= this.currentIndex && this.currentIndex > 0) {
+        this.currentIndex--;
+      }
+    }
+  }
 
-	async next() {
-		if (this.playlist.length > this.currentIndex + 1) {
-			this.isManualSkip = true;
-			this.stop();
-			this.currentIndex += 1;
-			this.lastPosition = 0;
-			this.isPaused = true;
-			this.play(this.playlist[this.currentIndex]);
-		} else {
-			if (this.getMusicUrl) {
-				this.playlist = [...this.playlist, await this.getMusicUrl()];
-				await this.next();
-			}
-		}
-	}
+  async joinVoiceChat(chatGuid: string, voiceChatId: string, client: Client) {
+    this.chatGuid = chatGuid;
+    this.voiceChatId = voiceChatId;
+    this.client = client;
 
-	previous() {
-		if (this.currentIndex > 0) {
-			this.isManualSkip = true;
-			this.stop();
-			this.currentIndex--;
-			this.lastPosition = 0;
-			this.isPaused = true;
-			this.play();
-		}
-	}
+    const offer = await this.pc.createOffer();
+    if (!offer.sdp || !client.userGuid) return;
 
-	addToPlaylist(filePath: string) {
-		this.playlist.push(filePath);
-	}
+    await this.pc.setLocalDescription(offer);
+    const connect = await client.joinGroupVoiceChat(chatGuid, voiceChatId, offer.sdp, client.userGuid);
+    await this.pc.setRemoteDescription(new optionalWrtc.RTCSessionDescription({
+      type: 'answer',
+      sdp: connect.sdp_answer_data,
+    }));
+    await client.setVoiceChatState(chatGuid, voiceChatId);
+  }
 
-	removeFromPlaylist(filePath: string) {
-		const index = this.playlist.indexOf(filePath);
-		if (index !== -1) {
-			this.playlist.splice(index, 1);
-			if (index <= this.currentIndex && this.currentIndex > 0) {
-				this.currentIndex--;
-			}
-		}
-	}
+  private setTimers() {
+    this.clearTimers();
 
-	async joinVoiceChat(chatGuid: string, voiceChatId: string, client: Client) {
-		this.chatGuid = chatGuid;
-		this.voiceChatId = voiceChatId;
-		this.client = client;
+    this.updateTimers.push(setInterval(async () => {
+      if (this.client && this.chatGuid && this.voiceChatId) {
+        await this.client.getGroupVoiceChatUpdates(this.chatGuid, this.voiceChatId);
+      }
+    }, 10 * 1000));
 
-		const offer = await this.pc.createOffer();
-		if (!offer.sdp || !client.userGuid) return;
+    this.updateTimers.push(setInterval(async () => {
+      if (
+        this.client && this.chatGuid && this.voiceChatId &&
+        this.client.userGuid && !this.isPaused
+      ) {
+        await this.client.sendVoiceChatActivity(this.chatGuid, this.voiceChatId, this.client.userGuid);
+      }
+    }, 2 * 1000));
+  }
 
-		await this.pc.setLocalDescription(offer);
-
-		const connect = await client.joinGroupVoiceChat(
-			chatGuid,
-			voiceChatId,
-			offer.sdp,
-			client.userGuid,
-		);
-		const sdpAnswer = connect.sdp_answer_data;
-
-		await this.pc.setRemoteDescription(
-			new optionalWrtc.RTCSessionDescription({
-				type: 'answer',
-				sdp: sdpAnswer,
-			}),
-		);
-		await client.setVoiceChatState(chatGuid, voiceChatId);
-	}
-
-	private clearIntervals() {
-		if (this.intervalId) {
-			clearInterval(this.intervalId);
-			this.intervalId = undefined;
-		}
-	}
+  private clearTimers() {
+    this.updateTimers.forEach(clearInterval);
+    this.updateTimers = [];
+  }
 }
 
 export default VoiceChatClient;

@@ -2,16 +2,17 @@ import run from './run';
 import requestSendFile from './requestSendFile';
 import start from './start';
 import thumbnail from './thumbnail';
-import useError from './useError';
 import usePlugin from './usePlugin';
-import runErrorMiddlewares from './runErrorMiddlewares';
+import download from './download';
+import downloadProfilePicture from './downloadProfilePicture';
+
 
 export {
 	run,
-	useError,
+	start,
+	download,
+	thumbnail,
 	usePlugin,
 	requestSendFile,
-	start,
-	thumbnail,
-	runErrorMiddlewares,
+	downloadProfilePicture
 };

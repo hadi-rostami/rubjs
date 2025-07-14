@@ -1,5 +1,5 @@
 import Crypto from '../core/crypto';
-import Network from '../core/network_login';
+import Network from './network_login';
 import SessionManager from '../core/session';
 
 interface AuthResult {

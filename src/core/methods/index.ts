@@ -5,7 +5,7 @@ import * as Auth from './auth';
 import * as Channels from './channels';
 import * as Chats from './chats';
 import * as Contacts from './contacts';
-import * as Extras from "./extras";
+import * as Extras from './extras';
 import * as Gif from './gif';
 import * as Groups from './groups';
 import * as Messages from './messages';
@@ -466,117 +466,124 @@ export default class Methods {
 
 	// extras
 
-	  async banMember(
+	async banMember(
 		this: Client,
 		...args: Parameters<typeof Extras.banMember>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.banMember.apply(this, args);
-	  }
+	}
 
-	  async getInfo(
+	async getInfo(
 		this: Client,
 		...args: Parameters<typeof Extras.getInfo>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.getInfo.apply(this, args);
-	  }
+	}
 
-	  async getObjectByUsername(
+	async getObjectByUsername(
 		this: Client,
 		...args: Parameters<typeof Extras.getObjectByUsername>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.getObjectByUsername.apply(this, args);
-	  }
+	}
 
-	  async getProfileLinkItems(
+	async getProfileLinkItems(
 		this: Client,
 		...args: Parameters<typeof Extras.getProfileLinkItems>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.getProfileLinkItems.apply(this, args);
-	  }
+	}
 
-	  async getRelatedObjects(
+	async getRelatedObjects(
 		this: Client,
 		...args: Parameters<typeof Extras.getRelatedObjects>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.getRelatedObjects.apply(this, args);
-	  }
+	}
 
-	  async getTranscription(
+	async getTranscription(
 		this: Client,
 		...args: Parameters<typeof Extras.getTranscription>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.getTranscription.apply(this, args);
-	  }
+	}
 
-	  async join(
+	async onEditMessages(
+		this: Client,
+		...args: Parameters<typeof Extras.onEditMessages>
+	): Promise<any> {
+		return Extras.onEditMessages.apply(this, args);
+	}
+
+	async join(
 		this: Client,
 		...args: Parameters<typeof Extras.join>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.join.apply(this, args);
-	  }
+	}
 
-	  async leaveChat(
+	async leaveChat(
 		this: Client,
 		...args: Parameters<typeof Extras.leaveChat>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.leaveChat.apply(this, args);
-	  }
+	}
 
-	  async reportObject(
+	async reportObject(
 		this: Client,
 		...args: Parameters<typeof Extras.reportObject>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.reportObject.apply(this, args);
-	  }
+	}
 
-	  async searchGlobalObjects(
+	async searchGlobalObjects(
 		this: Client,
 		...args: Parameters<typeof Extras.searchGlobalObjects>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.searchGlobalObjects.apply(this, args);
-	  }
+	}
 
-	  async transcribeVoice(
+	async transcribeVoice(
 		this: Client,
 		...args: Parameters<typeof Extras.transcribeVoice>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.transcribeVoice.apply(this, args);
-	  }
+	}
 
-	  async userIsAdmin(
+	async userIsAdmin(
 		this: Client,
 		...args: Parameters<typeof Extras.userIsAdmin>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.userIsAdmin.apply(this, args);
-	  }
+	}
 
-	  async deleteMessagebyCount(
+	async deleteMessagebyCount(
 		this: Client,
 		...args: Parameters<typeof Extras.deleteMessagebyCount>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.deleteMessagebyCount.apply(this, args);
-	  }
+	}
 
-	  async joinVoiceChat(
+	async joinVoiceChat(
 		this: Client,
 		...args: Parameters<typeof Extras.joinVoiceChat>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.joinVoiceChat.apply(this, args);
-	  }
+	}
 
-	  async setVoiceChatState(
+	async setVoiceChatState(
 		this: Client,
 		...args: Parameters<typeof Extras.setVoiceChatState>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.setVoiceChatState.apply(this, args);
-	  }
+	}
 
-	  async sendVoiceChatActivity(
+	async sendVoiceChatActivity(
 		this: Client,
 		...args: Parameters<typeof Extras.sendVoiceChatActivity>
-	  ): Promise<any> {
+	): Promise<any> {
 		return Extras.sendVoiceChatActivity.apply(this, args);
-	  }
+	}
 
 	// gif
 
@@ -1193,25 +1200,18 @@ export default class Methods {
 
 	//   // utilities
 
-	//   async download(
-	// 	this: Client,
-	// 	...args: Parameters<typeof Utilities.download>
-	//   ): Promise<any> {
-	// 	return Utilities.download.apply(this, args);
-	//   }
-
-	//   async downloadProfilePicture(
-	// 	this: Client,
-	// 	...args: Parameters<typeof Utilities.downloadProfilePicture>
-	//   ): Promise<any> {
-	// 	return Utilities.downloadProfilePicture.apply(this, args);
-	//   }
-
-	async runErrorMiddlewares(
+	async download(
 		this: Client,
-		...args: Parameters<typeof Utilities.runErrorMiddlewares>
+		...args: Parameters<typeof Utilities.download>
 	): Promise<any> {
-		return Utilities.runErrorMiddlewares.apply(this, args);
+		return Utilities.download.apply(this, args);
+	}
+
+	async downloadProfilePicture(
+		this: Client,
+		...args: Parameters<typeof Utilities.downloadProfilePicture>
+	): Promise<any> {
+		return Utilities.downloadProfilePicture.apply(this, args);
 	}
 
 	async usePlugin(
@@ -1219,14 +1219,6 @@ export default class Methods {
 		...args: Parameters<typeof Utilities.usePlugin>
 	): Promise<any> {
 		return Utilities.usePlugin.apply(this, args);
-	}
-
-
-	async useError(
-		this: Client,
-		...args: Parameters<typeof Utilities.useError>
-	): Promise<any> {
-		return Utilities.useError.apply(this, args);
 	}
 
 	async run(

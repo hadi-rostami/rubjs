@@ -1,5 +1,5 @@
-import { Client } from '..';
-import { DecoratorsTypes } from './index.type';
+import { Client } from '../..';
+import { DecoratorsTypes } from '../../types/index.type';
 
 const getOriginalType = (message: any) => {
 	try {

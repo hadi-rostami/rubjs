@@ -1,10 +1,12 @@
 import Client from './core/client';
 import Filters from './core/filters';
-import Utils from './core/utils';
+import Utils from './utils/utils';
 
-import { Middleware, RubPlugin } from './types/client.type';
-import type MessageType from './types/message.type';
-import * as ContextTypes from './types/index.type';
+import { RubPlugin } from './types/client.type';
+import type MessageType from './core/context/message.type';
+import type ActivitiesType from './core/context/activities.type';
+import type ChatType from './core/context/chat.type';
+import type NotificationsType from './core/context/notifications.type';
 import * as Clients from './clients';
 
 export {
@@ -13,10 +15,11 @@ export {
 	Utils,
 
 	// types
-	Middleware,
-	MessageType,
 	RubPlugin,
-	ContextTypes,
+	ChatType,
+	MessageType,
+	ActivitiesType,
+	NotificationsType,
 
 	// clients
 	Clients,

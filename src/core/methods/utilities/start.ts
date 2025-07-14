@@ -34,10 +34,7 @@ async function start(this: Client): Promise<void> {
 			}
 		}
 
-		let result = await this.sendCode(phone_number);
-
-        console.log(result);
-        
+		let result = await this.sendCode(phone_number);       
 
 		if (result.status == 'SendPassKey') {
 			while (true) {

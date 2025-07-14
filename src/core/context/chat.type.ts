@@ -1,5 +1,5 @@
-import { Client } from '..';
-import { DecoratorsTypes } from './index.type';
+import { Client } from '../..';
+import { DecoratorsTypes } from '../../types/index.type';
 
 class Chat implements DecoratorsTypes.ChatUpdates {
 	object_guid: string;

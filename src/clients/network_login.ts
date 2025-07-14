@@ -1,5 +1,5 @@
 import { Agent, request as undiciRequest } from 'undici';
-import Crypto from './crypto';
+import Crypto from '../core/crypto';
 
 interface PlatformInfo {
 	app_name: string;

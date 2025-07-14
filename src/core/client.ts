@@ -1,9 +1,9 @@
 import Network from './network';
-import { ClientTypes } from '../types/index.type';
-import SessionManager from './session';
 import Methods from './methods';
-type M = ClientTypes.Middleware<ClientTypes.ContextMap['message']>;
-type H = ClientTypes.Handler<ClientTypes.ContextMap['message']>;
+import SessionManager from './session';
+import Message from './context/message.type';
+import { ClientTypes } from '../types/index.type';
+import { ContextMap, Handler } from '../types/client.type';
 
 export default class Client extends Methods {
 	public initialize = false;
@@ -15,15 +15,9 @@ export default class Client extends Methods {
 	public network: Network;
 	public plugins: ClientTypes.RubPlugin[] = [];
 	public errorMiddlewares: ClientTypes.ErrorMiddleware[] = [];
-	public cmd: {
-		pattern: string | RegExp;
-		middlewares: ClientTypes.MiddlewareChain<ClientTypes.ContextMap['message']>;
-	}[] = [];
-
+	public userGuid?: string;
 	public handlers: {
-		[K in ClientTypes.TypeUpdate]: ClientTypes.MiddlewareChain<
-			ClientTypes.ContextMap[K]
-		>[];
+		[K in keyof ContextMap]: Handler<ContextMap[K]>[];
 	} = {
 		chat: [],
 		message: [],
@@ -31,78 +25,83 @@ export default class Client extends Methods {
 		notifications: [],
 	};
 
-	userGuid?: string;
-
 	constructor(
 		private session: ClientTypes.SessionType,
 		public platform: ClientTypes.PlatformType = 'Web',
 		public timeout: number = 5000,
 	) {
 		super();
-		this.sessionDb = new SessionManager(session);
+		this.sessionDb = new SessionManager(this.session);
 		this.network = new Network(this);
 
 		this.start();
 	}
 
-	// Overloads
-	on<K extends ClientTypes.TypeUpdate>(
-		updateType: K,
-		handler: ClientTypes.Handler<ClientTypes.ContextMap[K]>,
-	): void;
-	on<K extends ClientTypes.TypeUpdate>(
-		updateType: K,
-		m1: ClientTypes.Middleware<ClientTypes.ContextMap[K]>,
-		handler: ClientTypes.Handler<ClientTypes.ContextMap[K]>,
-	): void;
-	on<K extends ClientTypes.TypeUpdate>(
-		updateType: K,
-		m1: ClientTypes.Middleware<ClientTypes.ContextMap[K]>,
-		m2: ClientTypes.Middleware<ClientTypes.ContextMap[K]>,
-		handler: ClientTypes.Handler<ClientTypes.ContextMap[K]>,
-	): void;
-	on<K extends ClientTypes.TypeUpdate>(
-		updateType: K,
-		m1: ClientTypes.Middleware<ClientTypes.ContextMap[K]>,
-		m2: ClientTypes.Middleware<ClientTypes.ContextMap[K]>,
-		m3: ClientTypes.Middleware<ClientTypes.ContextMap[K]>,
-		handler: ClientTypes.Handler<ClientTypes.ContextMap[K]>,
+	on<T extends keyof typeof this.handlers>(
+		type: T,
+		handler: (ctx: ContextMap[T]) => Promise<void>,
 	): void;
 
-	on<K extends ClientTypes.TypeUpdate>(
-		updateType: K,
-		...funcs: ClientTypes.MiddlewareChain<ClientTypes.ContextMap[K]>
-	): void {
-		if (funcs.length === 0) {
-			throw new Error('At least one handler is required.');
+	on<T extends keyof typeof this.handlers>(
+		type: T,
+		filters: Array<(ctx: ContextMap[T]) => boolean | Promise<boolean>>,
+		handler: (ctx: ContextMap[T]) => Promise<void>,
+	): void;
+
+	on<T extends keyof typeof this.handlers>(
+		type: T,
+		filtersOrHandler:
+			| Array<(ctx: ContextMap[T]) => boolean | Promise<boolean>>
+			| ((ctx: ContextMap[T]) => Promise<void>),
+		maybeHandler?: (ctx: ContextMap[T]) => Promise<void>,
+	) {
+		if (typeof filtersOrHandler === 'function') {
+			this.handlers[type].push({
+				filters: [],
+				handler: filtersOrHandler,
+			});
+		} else if (Array.isArray(filtersOrHandler) && maybeHandler) {
+			this.handlers[type].push({
+				filters: filtersOrHandler,
+				handler: maybeHandler,
+			});
+		} else {
+			throw new Error('Invalid arguments for on()');
 		}
-
-		const last = funcs[funcs.length - 1];
-		if (last.length !== 1) {
-			throw new Error('Last argument must be a handler (ctx => Promise<void>)');
-		}
-
-		this.handlers[updateType].push(funcs);
 	}
 
-	// Overloads
-	command(pattern: string | RegExp, handler: H): void;
-	command(pattern: string | RegExp, m1: M, handler: H): void;
-	command(pattern: string | RegExp, m1: M, m2: M, handler: H): void;
-	command(pattern: string | RegExp, m1: M, m2: M, m3: M, handler: H): void;
-	command(pattern: string | RegExp, ...handlers: (M | H)[]): void {
-		if (handlers.length === 0) {
-			throw new Error('At least one handler is required.');
-		}
+	command(
+		prefix: string | RegExp,
+		handler: (ctx: Message) => Promise<void>,
+	): void;
 
-		const last = handlers[handlers.length - 1];
-		if (last.length !== 1) {
-			throw new Error('Last handler must be of type (ctx) => Promise<void>');
-		}
+	command(
+		prefix: string | RegExp,
+		filters: Array<(ctx: Message) => boolean | Promise<boolean>>,
+		handler: (ctx: Message) => Promise<void>,
+	): void;
 
-		this.cmd.push({
-			pattern,
-			middlewares: handlers as [...M[], H],
-		});
+	command(
+		prefix: string | RegExp,
+		filtersOrHandler:
+			| Array<(ctx: Message) => boolean | Promise<boolean>>
+			| ((ctx: Message) => Promise<void>),
+		maybeHandler?: (ctx: Message) => Promise<void>,
+	) {
+		if (typeof filtersOrHandler === 'function') {
+			this.handlers['message'].push({
+				filters: [],
+				handler: filtersOrHandler,
+				prefix,
+			});
+		} else if (Array.isArray(filtersOrHandler) && maybeHandler) {
+			this.handlers['message'].push({
+				filters: filtersOrHandler,
+				handler: maybeHandler,
+				prefix,
+			});
+		} else {
+			throw new Error('Invalid arguments for command()');
+		}
 	}
 }
