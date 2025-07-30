@@ -15,18 +15,39 @@
 
 ---
 
-## ⚡ نمونه کد اولیه
+##  نمونه کد اولیه برای سلف
 
 ```js
-const { Client, Utils, Filters } = require("rubjs");
+const { Client, ClientFilters } = require("rubjs");
 
-const bot = new Client("rubjs");
+const client = new Client("rubjs");
 
-bot.command("/admin", [Filters.isPrivate], async (ctx) => {
+client.command("/admin", [ClientFilters.isPrivate], async (ctx) => {
   await ctx.reply("شما ادمین هستید ✅");
 });
 
-bot.command("message", [Filters.isGroup], async (ctx) => {
+client.on("message", [ClientFilters.isGroup], async (ctx) => {
+  await ctx.reply("سلام");
+});
+
+client.run();
+```
+
+--- 
+
+
+##  نمونه کد اولیه برای ربات
+
+```js
+const { Bot, BotFilters } = require("rubjs");
+
+const bot = new Bot("rubjs");
+
+bot.command("/start", async (ctx) => {
+  await ctx.reply("ربات استارت شد.");
+});
+
+bot.on("message", [Filters.isText], async (ctx) => {
   await ctx.reply("سلام");
 });
 

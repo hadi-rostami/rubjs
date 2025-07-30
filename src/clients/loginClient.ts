@@ -1,6 +1,6 @@
-import Crypto from '../core/crypto';
+import Crypto from '../core/client/crypto';
 import Network from './network_login';
-import SessionManager from '../core/session';
+import SessionManager from '../utils/session';
 
 interface AuthResult {
 	isOk: boolean;
@@ -108,7 +108,7 @@ class LoginClient {
 		};
 
 		if (sessionPath) {
-			const session = new SessionManager(sessionPath);
+			const session = new SessionManager(sessionPath, undefined, 'CLIENT');
 			session.saveSession(sessionData);
 		}
 		return { isOk: true, status: 'Sucessfull', sessionData };

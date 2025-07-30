@@ -1,45 +1,51 @@
 {
-  "name": "rubjs",
-  "version": "3.0.1",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "keywords": [
-    "javascript",
-    "Rubika",
-    "library",
-    "rubjs"
-  ],
-  "module": "./lib/index.js",
-  "exports": {
-    "import": "./lib/index.js",
-    "require": "./lib/index.js",
-    "types": "./lib/index.d.ts"
-  },
-  "author": "Hadi Rostami",
-  "license": "MIT",
-  "type": "commonjs",
-  "description": "A library for Rubika in JavaScript.",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "prepare": "npm run build"
-  },
-  "dependencies": {
-    "node-rsa": "^1.1.1",
-    "optional-require": "^2.0.1",
-    "undici": "^7.10.0",
-    "user-agents": "^1.1.581"
-  },
-  "devDependencies": {
-    "@types/node": "^22.13.1",
-    "@types/node-rsa": "^1.1.4",
-    "@types/user-agents": "^1.0.4",
-    "eslint": "^9.29.0",
-    "prettier": "^3.6.1",
-    "typescript": "^5.7.3"
-  },
-  "files": [
-    "lib/",
-    "README.md"
-  ]
+	"name": "rubjs",
+	"version": "3.0.1",
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"keywords": [
+		"javascript",
+		"Rubika",
+		"library",
+		"rubjs"
+	],
+	"module": "./lib/index.js",
+	"exports": {
+		"import": "./lib/index.js",
+		"require": "./lib/index.js",
+		"types": "./lib/index.d.ts"
+	},
+	"author": "Hadi Rostami",
+	"license": "MIT",
+	"type": "commonjs",
+	"description": "A library for Rubika in JavaScript.",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"prepare": "npm run build"
+	},
+	"dependencies": {
+		"axios": "^1.11.0",
+		"fastify": "^5.4.0",
+		"json-bigint": "^1.0.0",
+		"localtunnel": "^2.0.2",
+		"node-rsa": "^1.1.1",
+		"optional-require": "^2.0.1",
+		"undici": "^7.10.0",
+		"user-agents": "^1.1.581"
+	},
+	"devDependencies": {
+		"@types/json-bigint": "^1.0.4",
+		"@types/localtunnel": "^2.0.4",
+		"@types/node": "^22.13.1",
+		"@types/node-rsa": "^1.1.4",
+		"@types/user-agents": "^1.0.4",
+		"eslint": "^9.29.0",
+		"prettier": "^3.6.1",
+		"typescript": "^5.7.3"
+	},
+	"files": [
+		"lib/",
+		"README.md"
+	]
 }
