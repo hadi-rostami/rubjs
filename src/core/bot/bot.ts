@@ -6,6 +6,7 @@ import {
 	BotType,
 	ContextMap,
 	Handler,
+	NestedFilter,
 	SessionType,
 } from './types/bot.type';
 import Fastify, { FastifyInstance } from 'fastify';
@@ -39,14 +40,14 @@ class Bot extends Methods {
 
 	on<T extends keyof typeof this.handlers>(
 		type: T,
-		filters: Array<(ctx: ContextMap[T]) => boolean | Promise<boolean>>,
+		filters: NestedFilter<ContextMap[T]>,
 		handler: (ctx: ContextMap[T]) => Promise<void>,
 	): void;
 
 	on<T extends keyof typeof this.handlers>(
 		type: T,
 		filtersOrHandler:
-			| Array<(ctx: ContextMap[T]) => boolean | Promise<boolean>>
+			| NestedFilter<ContextMap[T]>
 			| ((ctx: ContextMap[T]) => Promise<void>),
 		maybeHandler?: (ctx: ContextMap[T]) => Promise<void>,
 	): void {
@@ -70,14 +71,14 @@ class Bot extends Methods {
 
 	command(
 		prefix: string | RegExp,
-		filters: Array<(ctx: Message) => boolean | Promise<boolean>>,
+		filters: NestedFilter<ContextMap['message']>,
 		handler: (ctx: Message) => Promise<void>,
 	): void;
 
 	command(
 		prefix: string | RegExp,
 		filtersOrHandler:
-			| Array<(ctx: Message) => boolean | Promise<boolean>>
+			| NestedFilter<ContextMap['message']>
 			| ((ctx: Message) => Promise<void>),
 		maybeHandler?: (ctx: Message) => Promise<void>,
 	) {

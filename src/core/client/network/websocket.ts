@@ -166,7 +166,7 @@ async function handleCategory<T extends keyof ContextMap>(
 
 		for (const { filters, handler, prefix } of handlers) {
 			// filters
-			const passed = await checkFilters(ctx, filters);
+			const passed = await checkFilters(ctx, filters );
 
 			if (passed) {
 				// Prefix logic

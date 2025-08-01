@@ -1,6 +1,6 @@
 {
 	"name": "rubjs",
-	"version": "3.1.1",
+	"version": "3.1.2",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"keywords": [
@@ -9,6 +9,11 @@
 		"library",
 		"rubjs"
 	],
+	"homepage": "https://hadi-rostami.github.io/rubjs-docs/",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/hadi-rostami/rubjs"
+	},
 	"module": "./lib/index.js",
 	"exports": {
 		"import": "./lib/index.js",
@@ -28,7 +33,7 @@
 		"axios": "^1.11.0",
 		"fastify": "^5.4.0",
 		"json-bigint": "^1.0.0",
-		"localtunnel": "^2.0.2",
+		"localtunnel": "npm:@security-patched/localtunnel@^2.0.2-secpatched.5",
 		"node-rsa": "^1.1.1",
 		"optional-require": "^2.0.1",
 		"undici": "^7.10.0",

@@ -33,6 +33,9 @@ export default class Network {
 					const responseData = await res.body.text();
 					const data = JSONbig.parse(responseData);
 
+					console.log(data);
+					
+
 					return JSON.parse(JSON.stringify(data));
 				} else {
 					console.warn(

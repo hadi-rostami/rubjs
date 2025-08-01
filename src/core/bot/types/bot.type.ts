@@ -22,9 +22,11 @@ export interface ContextMap {
 	inline: InlineMessage;
 }
 
+export type FilterFn<T> = (ctx: T) => boolean | Promise<boolean>;
+export type NestedFilter<T> = Array<FilterFn<T> | FilterFn<T>[]>;
 
 export type Handler<T> = {
-	filters: Array<(ctx: T) => boolean | Promise<boolean>>;
+	filters: NestedFilter<T>;
 	handler: (ctx: T) => Promise<void>;
 	prefix?: string | RegExp;
 };

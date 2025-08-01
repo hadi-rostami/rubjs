@@ -25,7 +25,7 @@ async function uploadFile(
 		body: form,
 		headers: form.getHeaders(),
 		dispatcher: this.network.agent,
-	});
+	});	
 
 	if (!res.ok) {
 		const text = await res.text();

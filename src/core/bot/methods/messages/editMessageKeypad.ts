@@ -4,12 +4,12 @@ import { InlineKeypad } from '../../types/models';
 async function editMessageKeypad(
 	this: Bot,
 	chat_id: string,
-	text: string,
+	message_id: string,
 	inline_keypad?: InlineKeypad,
 ) {
 	const data = {
 		chat_id,
-		text,
+		message_id,
 		inline_keypad,
 	};
 
