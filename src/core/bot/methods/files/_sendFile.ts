@@ -1,28 +1,47 @@
 import Bot from '../../bot';
-import { ChatKeypadTypeEnum, InlineKeypad, Keypad } from '../../types/models';
+import fs from 'fs';
+import {
+	ChatKeypadTypeEnum,
+	FileTypeEnum,
+	InlineKeypad,
+	Keypad,
+} from '../../types/models';
 
 interface SendType {
 	chat_id: string;
+	file_id: string;
 	disable_notification: boolean;
+	chat_keypad_type?: ChatKeypadTypeEnum;
 	text?: string;
 	chat_keypad?: Keypad;
 	inline_keypad?: InlineKeypad;
 	reply_to_message_id?: string;
-	chat_keypad_type?: ChatKeypadTypeEnum;
 }
 
-async function sendMessage(
+async function _sendFile(
 	this: Bot,
 	chat_id: string,
-	text: string,
+	path_file: string,
+	text?: string,
+	type: FileTypeEnum = FileTypeEnum.File,
 	chat_keypad?: Keypad,
 	inline_keypad?: InlineKeypad,
 	disable_notification = false,
 	reply_to_message_id?: string,
 	chat_keypad_type?: ChatKeypadTypeEnum,
 ) {
+	if (!fs.existsSync(path_file)) {
+		throw new Error('');
+	}
+
+	const { upload_url } = await this.requestSendFile(type);
+	const {
+		data: { file_id },
+	} = await this.uploadFile(upload_url, path_file);
+
 	const data: SendType = {
 		chat_id,
+		file_id,
 		disable_notification,
 	};
 
@@ -40,7 +59,7 @@ async function sendMessage(
 		data.chat_keypad_type = ChatKeypadTypeEnum.None;
 	}
 
-	return await this.builder('sendMessage', data);
+	return await this.builder('sendFile', data);
 }
 
-export default sendMessage;
+export default _sendFile;

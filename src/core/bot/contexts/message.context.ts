@@ -47,7 +47,7 @@ class Message implements Update {
 		reply_to_message_id?: string,
 		chat_keypad_type?: ChatKeypadTypeEnum,
 	) {
-		await this.bot.sendMessage(
+		return await this.bot.sendMessage(
 			this.chat_id,
 			text,
 			chat_keypad,
@@ -64,7 +64,7 @@ class Message implements Update {
 
 		if (!message_id) return;
 
-		await this.bot.forwardMessage(
+		return await this.bot.forwardMessage(
 			this.chat_id,
 			message_id,
 			to_chat_id,
@@ -78,7 +78,7 @@ class Message implements Update {
 
 		if (!message_id) return;
 
-		await this.bot.deleteMessage(this.chat_id, message_id);
+		return await this.bot.deleteMessage(this.chat_id, message_id);
 	}
 }
 

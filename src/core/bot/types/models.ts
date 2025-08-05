@@ -347,10 +347,19 @@ export interface InlineMessage {
 	chat_id: string;
 }
 
+// methods
+
 export interface SendMessage {
 	message_id: string;
 }
 
+export interface UploadFile {
+	status: string;
+	status_det: string;
+	data: { file_id: string };
+}
+
+// utils
 export interface Commend {
 	command: string;
 	description: string;

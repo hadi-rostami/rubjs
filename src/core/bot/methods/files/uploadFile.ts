@@ -1,39 +1,33 @@
 import fs from 'fs';
 import Bot from '../../bot';
-import { fetch } from 'undici';
+import { request } from 'undici';
 import FormData from 'form-data';
+import { basename } from 'path';
 
-async function uploadFile(
-	this: Bot,
-	url: string,
-	fileName: string,
-	filePath: string,
-) {
+async function uploadFile(this: Bot, url: string, filePath: string) {
 	if (!fs.existsSync(filePath)) {
 		console.error('[ uploadFile ] File not found at:', filePath);
 		return;
 	}
+	const stream = fs.createReadStream(filePath);
+
 	const form = new FormData();
+	form.append('file', stream, { filename: basename(filePath) });
 
-	form.append('file', fs.createReadStream(filePath), {
-		contentType: 'application/octet-stream',
-		filename: fileName,
-	});
-
-	const res = await fetch(url, {
+	const res = await request(url, {
 		method: 'POST',
 		body: form,
 		headers: form.getHeaders(),
-		dispatcher: this.network.agent,
-	});	
+	});
 
-	if (!res.ok) {
-		const text = await res.text();
-		throw new Error(`HTTP ${res.status}: ${text}`);
+	const response: any = await res.body.json();
+
+	if (res.statusCode !== 200 || response.status !== 'OK') {
+		const text = await res.body.text();
+		throw new Error(`HTTP ${res.statusCode}: ${text}`);
 	}
 
-	const data: any = await res.json();
-	return data.data.file_id;
+	return response;
 }
 
 export default uploadFile;

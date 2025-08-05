@@ -31,10 +31,7 @@ export default class Network {
 
 				if (res.statusCode === 200) {
 					const responseData = await res.body.text();
-					const data = JSONbig.parse(responseData);
-
-					console.log(data);
-					
+					const data = JSONbig.parse(responseData);				
 
 					return JSON.parse(JSON.stringify(data));
 				} else {

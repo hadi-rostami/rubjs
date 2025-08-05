@@ -48,7 +48,7 @@ class InlineMessage implements InlineMessageType {
 		reply_to_message_id?: string,
 		chat_keypad_type?: ChatKeypadTypeEnum,
 	) {
-		await this.bot.sendMessage(
+		return await this.bot.sendMessage(
 			this.chat_id,
 			text,
 			chat_keypad,

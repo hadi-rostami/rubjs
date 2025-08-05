@@ -10,7 +10,7 @@ import * as Messages from './messages';
 import * as Chat from './chat';
 import * as Settings from './settings';
 
-import { SendMessage, Bot as BotType, Chat as ChatType } from '../types/models';
+import * as Types from '../types/models';
 
 export default class Methods {
 	// advanced
@@ -25,7 +25,7 @@ export default class Methods {
 	async getMe(
 		this: Bot,
 		...args: Parameters<typeof BotMethods.getMe>
-	): Promise<BotType> {
+	): Promise<Types.Bot> {
 		return BotMethods.getMe.apply(this, args);
 	}
 
@@ -42,74 +42,118 @@ export default class Methods {
 	): Promise<{ upload_url: string }> {
 		return Files.requestSendFile.apply(this, args);
 	}
+
 	async uploadFile(
 		this: Bot,
 		...args: Parameters<typeof Files.uploadFile>
-	): Promise<any> {
+	): Promise<Types.UploadFile> {
 		return Files.uploadFile.apply(this, args);
+	}
+
+	async _sendFile(
+		this: Bot,
+		...args: Parameters<typeof Files._sendFile>
+	): Promise<Types.SendMessage> {
+		return Files._sendFile.apply(this, args);
 	}
 
 	// messages
 	async sendMessage(
 		this: Bot,
 		...args: Parameters<typeof Messages.sendMessage>
-	): Promise<SendMessage> {
+	): Promise<Types.SendMessage> {
 		return Messages.sendMessage.apply(this, args);
+	}
+	async sendMusic(
+		this: Bot,
+		...args: Parameters<typeof Messages.sendMusic>
+	): Promise<Types.SendMessage> {
+		return Messages.sendMusic.apply(this, args);
+	}
+	async sendFile(
+		this: Bot,
+		...args: Parameters<typeof Messages.sendFile>
+	): Promise<Types.SendMessage> {
+		return Messages.sendFile.apply(this, args);
+	}
+	async sendGif(
+		this: Bot,
+		...args: Parameters<typeof Messages.sendGif>
+	): Promise<Types.SendMessage> {
+		return Messages.sendGif.apply(this, args);
+	}
+	async sendImage(
+		this: Bot,
+		...args: Parameters<typeof Messages.sendImage>
+	): Promise<Types.SendMessage> {
+		return Messages.sendImage.apply(this, args);
+	}
+	async sendVideo(
+		this: Bot,
+		...args: Parameters<typeof Messages.sendVideo>
+	): Promise<Types.SendMessage> {
+		return Messages.sendVideo.apply(this, args);
+	}
+	async sendVoice(
+		this: Bot,
+		...args: Parameters<typeof Messages.sendVoice>
+	): Promise<Types.SendMessage> {
+		return Messages.sendVoice.apply(this, args);
 	}
 
 	async sendPoll(
 		this: Bot,
 		...args: Parameters<typeof Messages.sendPoll>
-	): Promise<SendMessage> {
+	): Promise<Types.SendMessage> {
 		return Messages.sendPoll.apply(this, args);
 	}
 
 	async sendLocation(
 		this: Bot,
 		...args: Parameters<typeof Messages.sendLocation>
-	): Promise<SendMessage> {
+	): Promise<Types.SendMessage> {
 		return Messages.sendLocation.apply(this, args);
 	}
 
 	async sendContact(
 		this: Bot,
 		...args: Parameters<typeof Messages.sendContact>
-	): Promise<SendMessage> {
+	): Promise<Types.SendMessage> {
 		return Messages.sendContact.apply(this, args);
 	}
 
 	async forwardMessage(
 		this: Bot,
 		...args: Parameters<typeof Messages.forwardMessage>
-	): Promise<SendMessage> {
+	): Promise<Types.SendMessage> {
 		return Messages.forwardMessage.apply(this, args);
 	}
 
 	async editMessageText(
 		this: Bot,
 		...args: Parameters<typeof Messages.editMessageText>
-	): Promise<SendMessage> {
+	): Promise<Types.SendMessage> {
 		return Messages.editMessageText.apply(this, args);
 	}
 
 	async deleteMessage(
 		this: Bot,
 		...args: Parameters<typeof Messages.deleteMessage>
-	): Promise<SendMessage> {
+	): Promise<Types.SendMessage> {
 		return Messages.deleteMessage.apply(this, args);
 	}
 
 	async editMessageKeypad(
 		this: Bot,
 		...args: Parameters<typeof Messages.editMessageKeypad>
-	): Promise<SendMessage> {
+	): Promise<Types.SendMessage> {
 		return Messages.editMessageKeypad.apply(this, args);
 	}
 
 	async editChatKeypad(
 		this: Bot,
 		...args: Parameters<typeof Messages.editChatKeypad>
-	): Promise<SendMessage> {
+	): Promise<Types.SendMessage> {
 		return Messages.editChatKeypad.apply(this, args);
 	}
 
@@ -117,7 +161,7 @@ export default class Methods {
 	async getChat(
 		this: Bot,
 		...args: Parameters<typeof Chat.getChat>
-	): Promise<ChatType> {
+	): Promise<Types.Chat> {
 		return Chat.getChat.apply(this, args);
 	}
 
