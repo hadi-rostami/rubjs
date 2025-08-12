@@ -1,5 +1,5 @@
 import InlineMessage from '../contexts/inline.context';
-import Message from '../contexts/message.context';
+import Update from '../contexts/update.context';
 
 export interface Session {
 	iv: string;
@@ -18,7 +18,7 @@ export interface BotType {
 }
 
 export interface ContextMap {
-	message: Message;
+	update: Update;
 	inline: InlineMessage;
 }
 

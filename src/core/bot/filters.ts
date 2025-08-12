@@ -1,4 +1,4 @@
-import Message from './contexts/message.context';
+import Message from './contexts/update.context';
 import ClientFilters from '../client/filters';
 
 export default class BotFilters {

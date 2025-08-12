@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import Bot from '../../bot';
-import Message from '../../contexts/message.context';
+import Message from '../../contexts/update.context';
 import InlineMessage from '../../contexts/inline.context';
 import { UpdateTypeEnum } from '../../types/models';
 import { checkFilters } from '../../../../utils/checkFilters';
@@ -15,7 +15,7 @@ async function handleUpdates(
 	const data: any = req.body;
 
 	if (data?.update) {
-		for (let { prefix, filters, handler } of this.handlers.message) {
+		for (let { prefix, filters, handler } of this.handlers.update) {
 			const ctx = new Message(this, data.update);
 			const passed = await checkFilters(ctx, filters);
 

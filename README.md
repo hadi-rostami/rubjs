@@ -72,6 +72,9 @@ bot.run();
 ### ابزارهای داخلی توسعه  
 مثل `Utils.Bold`, `Utils.Italic` و ... برای زیباتر کردن پاسخ‌ها به کاربر.
 
+### راه اندازی وبسایت همزمان با ربات
+با rubjs میتوانید ربات را همزمان با وبسایت استقرار کنید | [اموزش](https://hadi-rostami.github.io/rubjs-docs/blog/running-website-and-bot-simultaneously-with-rubjs)
+
 
 </div>
 

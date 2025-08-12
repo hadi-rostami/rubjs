@@ -1,7 +1,7 @@
 import { Bot } from '../../..';
 import {
 	PaymentStatus,
-	Update,
+	Update as UpdateMessage,
 	UpdateTypeEnum,
 	Message as MessageUpdate,
 	Keypad,
@@ -9,7 +9,7 @@ import {
 	InlineKeypad,
 } from '../types/models';
 
-class Message implements Update {
+class Update implements UpdateMessage {
 	public type: UpdateTypeEnum;
 	public chat_id: string;
 	public removed_message_id?: string;
@@ -82,4 +82,4 @@ class Message implements Update {
 	}
 }
 
-export default Message;
+export default Update;

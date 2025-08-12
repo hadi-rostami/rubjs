@@ -1,5 +1,5 @@
 import SessionManager from '../../utils/session';
-import Message from './contexts/message.context';
+import Message from './contexts/update.context';
 import Methods from './methods';
 import Network from './network';
 import {
@@ -19,7 +19,7 @@ class Bot extends Methods {
 	public sendToken: string = '';
 	public handlers: {
 		[K in keyof ContextMap]: Handler<ContextMap[K]>[];
-	} = { inline: [], message: [] };
+	} = { inline: [], update: [] };
 	public server: FastifyInstance;
 
 	public bot?: BotType;
@@ -71,25 +71,25 @@ class Bot extends Methods {
 
 	command(
 		prefix: string | RegExp,
-		filters: NestedFilter<ContextMap['message']>,
+		filters: NestedFilter<ContextMap['update']>,
 		handler: (ctx: Message) => Promise<void>,
 	): void;
 
 	command(
 		prefix: string | RegExp,
 		filtersOrHandler:
-			| NestedFilter<ContextMap['message']>
+			| NestedFilter<ContextMap['update']>
 			| ((ctx: Message) => Promise<void>),
 		maybeHandler?: (ctx: Message) => Promise<void>,
 	) {
 		if (typeof filtersOrHandler === 'function') {
-			this.handlers.message.push({
+			this.handlers.update.push({
 				filters: [],
 				handler: filtersOrHandler,
 				prefix,
 			});
 		} else if (Array.isArray(filtersOrHandler) && maybeHandler) {
-			this.handlers.message.push({
+			this.handlers.update.push({
 				filters: filtersOrHandler,
 				handler: maybeHandler,
 				prefix,
