@@ -18,9 +18,10 @@ import type InlineMessageType from './core/bot/contexts/inline.context';
 import type UpdateType from './core/bot/contexts/update.context';
 
 import * as Clients from './clients';
+import * as Models from './core/bot/types/models';
 
 // export مقادیر runtime
-export { Client, ClientFilters, ClientUtils, Bot, BotFilters, Clients };
+export { Client, ClientFilters, ClientUtils, Bot, BotFilters, Clients, Models };
 
 // export تایپ‌ها
 export type {

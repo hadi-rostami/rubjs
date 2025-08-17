@@ -187,11 +187,18 @@ export default class Methods {
 		return Utilities.getUpdates.apply(this, args);
 	}
 
-	async setupWebhook(
+	async __setupWebhook(
 		this: Bot,
 		...args: Parameters<typeof Utilities.setupWebhook>
 	): Promise<any> {
 		return Utilities.setupWebhook.apply(this, args);
+	}
+
+	async __polling(
+		this: Bot,
+		...args: Parameters<typeof Utilities.polling>
+	): Promise<any> {
+		return Utilities.polling.apply(this, args);
 	}
 
 	// settings

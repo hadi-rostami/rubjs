@@ -1,7 +1,3 @@
-// rubika-models.ts
-
-// ================= Enums =================
-
 export enum ChatTypeEnum {
 	User = 'User',
 	Bot = 'Bot',

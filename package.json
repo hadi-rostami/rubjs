@@ -1,6 +1,6 @@
 {
 	"name": "rubjs",
-	"version": "3.2.0",
+	"version": "3.2.3",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"keywords": [
@@ -34,6 +34,7 @@
 		"fastify": "^5.4.0",
 		"json-bigint": "^1.0.0",
 		"localtunnel": "npm:@security-patched/localtunnel@^2.0.2-secpatched.5",
+		"ngrok": "^5.0.0-beta.2",
 		"node-rsa": "^1.1.1",
 		"optional-require": "^2.0.1",
 		"undici": "^7.10.0",
